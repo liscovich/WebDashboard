@@ -4,7 +4,8 @@ use Rack::Flash, :sweep=>true
 
 Compass.add_project_configuration(ROOT + '/config/compass.config')  
 
-DataMapper.setup :default, ENV['DATABASE_URL'] || "postgres://lucidrains:caC1tuS23@localhost/calc"
+db_string = if DEV then "postgres://lucidrains:caC1tuS23@localhost/calc" else "postgres://lucidrains1:caC1tuS2!@localhost/calc" end
+DataMapper.setup :default, db_string
 
 JS = {
   :jquery     => "https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js",
