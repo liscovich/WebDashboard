@@ -1,0 +1,19 @@
+= content_for :javascripts do
+  == js :mathjax
+  == js "/spine/spine.js"
+  == js "/app/home.js"
+h2 Hello World
+
+#equations
+  a#submit_equation href="SUBMIT!" sdfadf
+p
+  |
+    \[pCO^{2} = 1.5 * HCO^{3-} + 8 \pm 2\]
+
+
+form
+  p
+    label Hello
+    input type='text'
+  p
+    input type='submit' value='submit me'

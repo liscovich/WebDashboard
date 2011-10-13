@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    title Medical Calculators
+    == js :jquery
+    == js '/jquery.formalize.js'
+    == js '/app/app.js'
+    == yield_content :javascripts
+    == css '/style.css', '/text.css'
+    == yield_content :stylesheets
+  body
+    h1 Body
+    == yield

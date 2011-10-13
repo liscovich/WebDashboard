@@ -1,0 +1,16 @@
+source "http://rubygems.org"
+
+gem 'sinatra'
+gem 'sinatra-reloader'
+gem 'rack-flash'
+gem 'yajl-ruby'
+gem 'compass'
+gem 'dm-postgres-adapter'
+gem 'dm-core'
+gem 'dm-timestamps'
+gem 'dm-validations'
+gem 'dm-migrations'
+gem 'dm-aggregates'
+gem 'dm-pager'
+gem 'slim'
+gem 'bowtie'

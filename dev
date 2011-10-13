@@ -1,0 +1,3 @@
+#sudo redis-server &
+sudo compass watch app &
+sudo sh coffee &
