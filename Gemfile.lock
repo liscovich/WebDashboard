@@ -34,6 +34,7 @@ GEM
     do_postgres (0.10.6)
       data_objects (= 0.10.6)
     fssm (0.2.7)
+    memcache-client (1.8.5)
     monkey-lib (0.5.4)
       backports
     rack (1.3.4)
@@ -41,6 +42,9 @@ GEM
       rack
     rack-protection (1.1.4)
       rack
+    redis (2.2.2)
+    redis-objects (0.5.1)
+      redis (>= 2.1.1)
     sass (3.1.10)
     sinatra (1.3.1)
       rack (~> 1.3, >= 1.3.4)
@@ -76,7 +80,10 @@ DEPENDENCIES
   dm-postgres-adapter
   dm-timestamps
   dm-validations
+  memcache-client
   rack-flash
+  redis
+  redis-objects
   sinatra
   sinatra-reloader
   slim

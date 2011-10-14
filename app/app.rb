@@ -15,10 +15,15 @@ require 'dm-validations'
 require 'dm-migrations'
 require 'dm-aggregates'
 require 'dm-pager'
+require 'memcache'
+require 'redis'
+require 'redis/objects'
 require 'slim'
 
 ROOT        = File.expand_path(File.dirname(__FILE__))
 RESET_CACHE = Time.now.to_i
+
+$r = Redis.new
 
 set :root, ROOT   
 set :public_folder, File.expand_path(ROOT+'/../public')
@@ -33,6 +38,9 @@ Dir[ROOT+"/controllers/*.rb"].each{ |f| require f}
 
 
 get "/" do
+  session[:a] = 'ABC'
+  $r.set "abc", "cba"
+  @asdf = $r.get "abc"
   slim :"pages/home"
 end
 

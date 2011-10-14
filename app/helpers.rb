@@ -2,7 +2,32 @@ helpers do
   def partial(template, options={})
     slim template, :layout=>false, :locals=>options
   end
+
+  def r_cache (key,options={})
+    g = $r.get("cache_"+key)
+    return Marshal.load(g) unless g.nil?        
+    
+    v = yield
+    return if v.nil?
+    
+    m = Marshal.dump(v)
+    $r.setex("cache_"+key,(options[:expiry] || 3600),m)
+    v
+  end
   
+  def r_expire(key)
+    $r.del("cache_"+key)
+  end
+  
+  def r_expire_pattern(p)
+    keys = $r.keys("cache_"+p)
+    $r.multi do
+      keys.each do |k|
+        $r.del k
+      end
+    end
+  end
+    
   def css(*sources)
     sources.map do |s|
       if(s.is_a? Symbol)
