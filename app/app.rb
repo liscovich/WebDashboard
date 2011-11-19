@@ -1,29 +1,26 @@
 require 'sinatra'
 
 application = Sinatra::Application
-DEV = application.environment!=:production or ENV['APP_ENV']=='production'
-E   = DEV ? 'development' : 'production'
+DEV = application.environment!=:production and ENV['APP_ENV']!='production'
+E = DEV ? 'development' : 'production'
 
 require 'sinatra/reloader' if DEV
 require 'rack-flash'
 require 'yajl/json_gem'
 require 'compass'
-require 'dm-postgres-adapter'
+require 'do_mysql'
+require 'dm-mysql-adapter'
 require 'dm-core'
 require 'dm-timestamps'
 require 'dm-validations'
 require 'dm-migrations'
 require 'dm-aggregates'
 require 'dm-pager'
-require 'memcache'
-require 'redis'
-require 'redis/objects'
 require 'slim'
+require 'rturk'
 
 ROOT        = File.expand_path(File.dirname(__FILE__))
 RESET_CACHE = Time.now.to_i
-
-$r = Redis.new
 
 set :root, ROOT   
 set :public_folder, File.expand_path(ROOT+'/../public')
@@ -31,21 +28,20 @@ set :views , ROOT + "/views"
 set :logging, false
 set :run, true
 
-require ROOT + '/config/config'
 Dir[ ROOT + "/models/*.rb" ].each do |f| require f end
-require ROOT + '/helpers'
 Dir[ROOT+"/controllers/*.rb"].each{ |f| require f}
-
+require ROOT + '/config/config'
+require ROOT + '/helpers'
 
 get "/" do
-  session[:a] = 'ABC'
-  $r.set "abc", "cba"
-  @asdf = $r.get "abc"
+  u = Test.new
+  u.name = "Phillip"
+  u.save
   slim :"pages/home"
 end
 
 get "/upgrade" do
-  DataMapper.auto_upgrade!
+  Test.auto_migrate!
   "upgraded"
 end
 

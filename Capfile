@@ -2,23 +2,21 @@ load 'deploy' if respond_to?(:namespace)
 
 default_run_options[:pty] = true
 
-set :user,              'lucidrains1'
-set :password,          'caC1tuS2!'
-set :domain,            '69.164.201.59'
-set :port,              28282
-set :application,       'octomed'
-set :repository,        "git@epicmafia.unfuddle.com:epicmafia/octomed.git"
-set :scm,               "git"
-set :scm_password,      "refinemenT1"
-set :branch,            "master"
+set :user,              'root'
+set :password,          'hcpLab180'
+set :domain,            '50.57.187.207'
+set :port,              22
+set :application,       'econ'
+set :repository,        "."
+set :scm,               :none
 
-set :deploy_to,         "/var/www/octomed/" 
-set :deploy_via,        :remote_cache
-set :git_shallow_clone, 1
+set :deploy_to,         "/var/www/econ/" 
+set :deploy_via,        :copy
 set :copy_strategy,     :export
 set :copy_compression,  :bz2
 set :use_sudo,          true
 set :keep_releases,     2
+set :sudo_prompt,       "hcpLab180"
 
 server domain, :app, :web
 ssh_options[:forward_agent] = true
@@ -30,7 +28,8 @@ def surun(command)
   end
 end
 
-ROOT = "~/web/calc/"
+ROOT = "~/web/econ/"
+unicorn_pid = "/tmp/unicorn.econ.pid"
 
 namespace :local do
   task :delete_files do
@@ -109,8 +108,18 @@ namespace :deploy do
   end 
 end 
 
+namespace :unicorn do
+  task :stop do
+    run "kill -s QUIT `cat #{unicorn_pid}`; true"
+  end
+  task :start do
+    run "cd #{current_path} && bundle exec unicorn -Dc config/unicorn.rb -p 80"
+  end
+end
+
 before :deploy, "deploy:web:disable"
-after :deploy, "passenger:restart"
+after :deploy, "unicorn:stop"
+after :deploy, "unicorn:start"
 #after :deploy, "passenger:symlink_uploads"
 after :deploy, "deploy:web:enable"
 #after :deploy, "passenger:s3_upload"

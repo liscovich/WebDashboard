@@ -1,12 +1,12 @@
-disable :sessions
-use Rack::Session::Memcache, :memcache_server => '127.0.0.1:11211', :expire_after => 60*60*24, :namespace => "rack:session"
+enable :sessions
 disable :flash
 use Rack::Flash, :sweep=>true
 
 Compass.add_project_configuration(ROOT + '/config/compass.config')  
 
-db_string = if DEV then "postgres://lucidrains:caC1tuS23@localhost/calc" else "postgres://lucidrains1:caC1tuS2!@localhost/calc" end
+db_string = if DEV then "mysql://root:caC1tuS23@localhost/econ" else "mysql://root:hcpLab180@localhost/econ" end
 DataMapper.setup :default, db_string
+DataMapper::Logger.new($stdout, :debug)
 
 JS = {
   :jquery     => "https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js",
@@ -22,4 +22,5 @@ JS = {
 
 CSS = {
   :jquery_css => 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/smoothness/jquery-ui.css',
+  :twitter_bootstrap => 'http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css'
 }
