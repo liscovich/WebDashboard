@@ -1,4 +1,15 @@
 helpers do
+  def root_url
+    "#{request.host}#{(request.port!=80) ? ":#{request.port}" : ''}"
+  end
+  
+  def random(len)
+    chars = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a
+    newpass = ""
+    1.upto(len) { |i| newpass << chars[rand(chars.size-1)] }
+    return newpass
+  end
+    
   def partial(template, options={})
     slim template, :layout=>false, :locals=>options
   end
@@ -60,6 +71,15 @@ helpers do
     content_blocks[key.to_sym].map do |content|      
       content.call(*args)      
     end.uniq.join
+  end
+  
+  def redirect_flash(url,type,msg)
+    flash[type]=msg
+    redirect url
+  end
+  
+  def flash_back(msg)
+    redirect_flash back, :error, msg
   end
   
   private

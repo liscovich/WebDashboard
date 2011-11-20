@@ -5,7 +5,7 @@ default_run_options[:pty] = true
 set :user,              'root'
 set :password,          'hcpLab180'
 set :domain,            '50.57.187.207'
-set :port,              22
+set :port,              28
 set :application,       'econ'
 set :repository,        "."
 set :scm,               :none
@@ -117,7 +117,39 @@ namespace :unicorn do
   end
 end
 
+namespace :bundler do
+  task :create_symlink do
+    shared_dir = File.join(shared_path, 'bundle')
+    release_dir = File.join(current_path, '.bundle')
+    run("mkdir -p #{shared_dir} && ln -s #{shared_dir} #{release_dir}")
+  end
+
+  task :bundle_new_release do
+    bundler.create_symlink
+    run "cd #{current_path} && bundle install --without development test"
+  end
+end
+
+task :s3_upload do
+  s3_files = {
+    "/stylesheets/style.css"=>["em.css","style.css"]
+  }
+  s3_files.each do |k,v|
+    bucket, filename = v
+    run "s3cmd put --acl-public --guess-mime-type #{current_path}/public#{k} --add-header=Expires:'Sun, 17 Jan 2038, 19:14:07 GMT' --add-header='Cache-Control':'public,max-age=30672000' s3://#{bucket}/#{filename}"
+  end
+  
+  s3_directories = {
+  }
+  
+  s3_directories.each do |k,v|
+    bucket, path = v
+    run "s3cmd put -r --acl-public --guess-mime-type #{current_path}/public#{k} --add-header=Expires:'Sun, 17 Jan 2038, 19:14:07 GMT' --add-header='Cache-Control':'public,max-age=30672000' s3://#{bucket}/#{path}"
+  end
+end
+
 before :deploy, "deploy:web:disable"
+after :deploy, "bundler:bundle_new_release"
 after :deploy, "unicorn:stop"
 after :deploy, "unicorn:start"
 #after :deploy, "passenger:symlink_uploads"

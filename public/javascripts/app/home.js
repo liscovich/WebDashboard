@@ -1,39 +1,54 @@
 (function() {
-  var Equation, EquationApp;
-  var __hasProp = Object.prototype.hasOwnProperty, __extends = function(child, parent) {
-    for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; }
-    function ctor() { this.constructor = child; }
-    ctor.prototype = parent.prototype;
-    child.prototype = new ctor;
-    child.__super__ = parent.prototype;
-    return child;
-  };
-  Equation = (function() {
-    __extends(Equation, Spine.Model);
-    function Equation() {
-      Equation.__super__.constructor.apply(this, arguments);
-    }
-    Equation.configure("Equation", "name");
-    return Equation;
-  })();
-  EquationApp = (function() {
-    __extends(EquationApp, Spine.Controller);
-    EquationApp.prototype.events = {
-      "click #submit_equation": "sayHi"
-    };
-    function EquationApp() {
-      EquationApp.__super__.constructor.apply(this, arguments);
-    }
-    EquationApp.prototype.sayHi = function(e) {
-      alert("HELLo!");
-      return e.preventDefault();
-    };
-    return EquationApp;
-  })();
+  var game_state_tracker;
+  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  window.gst = null;
   $(function() {
-    alert("started");
-    return new EquationApp({
-      el: $('#equations')
-    });
+    window.gst = new game_state_tracker(2000);
+    return setTimeout(__bind(function() {
+      return window.gst.fetch_state();
+    }, this), 3000);
   });
+  game_state_tracker = (function() {
+    function game_state_tracker(poll_freq) {
+      this.poll_freq = poll_freq;
+      this.fetch_state = __bind(this.fetch_state, this);
+      this.last_id = 0;
+      this.run = true;
+    }
+    game_state_tracker.prototype.fetch_state = function() {
+      var data;
+      if (!this.run) {
+        return;
+      }
+      data = {
+        id: this.last_id
+      };
+      if (this.game_id) {
+        data.game_id = this.game_id;
+      }
+      return $.getJSON("/log", data, __bind(function(o) {
+        var log, _i, _len;
+        for (_i = 0, _len = o.length; _i < _len; _i++) {
+          log = o[_i];
+          this.process(log);
+        }
+        if (o.length > 0) {
+          this.last_id = o[o.length - 1]['id'];
+        }
+        return setTimeout(__bind(function() {
+          return this.fetch_state();
+        }, this), this.poll_freq);
+      }, this));
+    };
+    game_state_tracker.prototype.process_log = function(log) {
+      console.log(log);
+      switch (log['name']) {
+        case 'game_started':
+          return alert("game started");
+        case 'game_ended':
+          return alert("game ended!");
+      }
+    };
+    return game_state_tracker;
+  })();
 }).call(this);

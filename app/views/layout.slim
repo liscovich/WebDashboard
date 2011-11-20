@@ -3,13 +3,16 @@ html
   head
     title Econ Game
     == js :jquery
-    == js '/jquery.formalize.js'
     == js '/app/app.js'
     == yield_content :javascripts
     == css :twitter_bootstrap
     == css '/style.css'
     == yield_content :stylesheets
   body
+    - if @hiddens
+      - @hiddens.each do |k,v|
+        input type='hidden' id='hidden_#{k}' value=v
+    #error.alert-message.error class=(flash[:error].nil? ? 'hide' : '') ==flash[:error]
     #header
     #middle.container== yield
     #footer

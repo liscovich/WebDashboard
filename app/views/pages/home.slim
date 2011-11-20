@@ -1,25 +1,75 @@
 = content_for :javascripts do
+  == js :json
   == js "/app/home.js"
 
-h1 Econ Site
-
 .row
-  .span6 asdfasdfasdfasdsd
-  .span10 rtyurtyurtyu
+  h1 Public Goods Game
+  a.btn href="/game/delete_all" Reset Everything!
+  a.btn href="/log/delete_all" Delete Logs!
 .row
-  .span10 hfid;hdlfijgl;hjclg;hjgfhflkhj
-  .span6 239423947349857489537887
-
-ul
-  li asdfasdf
-  li qwerqwer
-  li retyrty
-
-form.form-stacked
-  label "Hello"
-  input type='text'
-  input type='submit' value='submit me'
-
-
-span.label.success Success!
-span.label.warning Warning!
+  .span6
+    h2 Create a game!
+    form method='post' action='/game'
+      fieldset
+        .clearfix
+          label Title
+          .input
+            input type='text' name='title' value="Default Title"
+        .clearfix
+          label Description
+          .input
+            textarea name='description' Description
+        .clearfix
+          label Trial ID
+          .input
+            input type='text' name='trial_id' value="Some Trial Id"
+        .clearfix
+          label Continuation Probability
+          .input
+            input type='text' name='cont_prob' value=1
+        .clearfix
+          label Initial Endowments
+          .input
+            input type='text' name='init_endow' value=1
+        .clearfix
+          label Cost of Defection
+          .input
+            input type='text' name='cost_defect' value=1
+        .clearfix
+          label Cost of Cooperation
+          .input
+            input type='text' name='cost_coop' value=1
+        .clearfix
+          label Individual Payoff Shares
+          .input
+            input type='text' name='ind_payoff_shares' value=1
+        .clearfix
+          label Total Subjects
+          .input
+            input type='text' name='total_subjects' value=3
+        .clearfix
+          label Human Subjects
+          .input
+            input type='text' name='human_subjects' value=3
+        .clearfix
+          .input
+            input.btn.primary.large type='submit' value='Start up game!'
+    form method='post' action='/user'
+      fieldset
+        
+  .span9.offset1
+    h2 Ongoing games!
+    #games
+      - Game.all.each do |g|
+        .game
+          .game-id==g.id
+          .game-title==g.title
+          .game-description==g.description
+          .game-approved==g.approved
+          a.btn.primary.game-link href="/game/#{g.id}/join" Join game!
+          a.btn.danger.game-delete href="/game/#{g.id}/delete" Delete game!
+          .game-mechanical-turk-links
+            - g.hits.each do |h|
+              a href=h.url Job ##{h.id}
+          - unless g.approved?
+            a.btn.success.game-hit href="/game/#{g.id}/approve" Approve
