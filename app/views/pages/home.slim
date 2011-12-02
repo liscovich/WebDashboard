@@ -104,7 +104,12 @@
                         - if assignment and assignment.status=='Submitted'
                           .top_game_controls
                             a.btn.success.game-hit href="/hit/#{hit.id}/approve" Approve
-                            a.btn.danger.game-hit href="/hit/#{hit.id}/reject" Reject
+                            form method="get" action="/hit/#{hit.id}/reject"
+                              p
+                                label Reason
+                                input type='text' name='reason'
+                              p
+                                input.btn.danger.game-hit type='submit' value='Reject'
                           .bottom_game_controls
                             form method="get" action="/hit/#{hit.id}/bonus"
                               p 
@@ -114,4 +119,4 @@
                                 label Reason
                                 textarea name='reason'
                               p
-                                input type='submit' value='Give Bonus'
+                                input.btn.success type='submit' value='Give Bonus'

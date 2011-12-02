@@ -206,7 +206,7 @@ end
 
 get "/hit/:id/reject" do
   @hit.assignments.each do |a|
-    a.reject! if a.status=='Submitted'
+    a.reject!(params[:reason]) if a.status=='Submitted'
   end
   @hit.expire!
   flash_back "You rejected hit id #{params[:id]}"
