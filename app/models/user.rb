@@ -6,6 +6,7 @@ class User
   property :mid, Integer
   property :fake, Boolean
 
+  has n, :authmethods
   has n, :gameusers
   has n, :games, :through=>:gameusers
 end

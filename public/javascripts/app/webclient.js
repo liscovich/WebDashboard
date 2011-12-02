@@ -1,6 +1,7 @@
 (function() {
   var game_tracker;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
   window.get_parameter = function(name) {
     var regex, regexS, results;
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -13,6 +14,7 @@
       return decodeURIComponent(results[1].replace(/\+/g, " "));
     }
   };
+
   $(function() {
     var gt;
     gt = new game_tracker(window.configs.gameid, 2000);
@@ -24,7 +26,9 @@
       return window.display_error("You successfully submitted this assignment!");
     });
   });
+
   game_tracker = (function() {
+
     function game_tracker(game_id, poll_freq) {
       this.game_id = game_id;
       this.poll_freq = poll_freq;
@@ -32,18 +36,19 @@
       this.fetch_state = __bind(this.fetch_state, this);
       this.run = true;
     }
+
     game_tracker.prototype.fetch_state = function() {
-      if (!this.run) {
-        return;
-      }
-      return $.getJSON("/game/" + this.game_id + "/state", __bind(function(o) {
+      var _this = this;
+      if (!this.run) return;
+      return $.getJSON("/game/" + this.game_id + "/state", function(o) {
         console.log(o);
-        this.process(o);
-        return setTimeout(__bind(function() {
-          return this.fetch_state();
-        }, this), this.poll_freq);
-      }, this));
+        _this.process(o);
+        return setTimeout(function() {
+          return _this.fetch_state();
+        }, _this.poll_freq);
+      });
     };
+
     game_tracker.prototype.process = function(obj) {
       var state, state_name;
       state = obj[0], state_name = obj[1];
@@ -54,6 +59,9 @@
           return $('#submit_row').slideDown();
       }
     };
+
     return game_tracker;
+
   })();
+
 }).call(this);

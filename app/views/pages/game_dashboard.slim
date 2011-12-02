@@ -1,0 +1,6 @@
+= content_for :javascripts do
+  == js "/app/dashboard.js"
+#dashboard_container
+  h1 Game Dashboard
+  #dashboard_inner
+    == @game.inspect

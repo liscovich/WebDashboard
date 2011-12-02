@@ -1,18 +1,16 @@
-(function() {
+
   window.display_error = function(msg) {
-    if (msg == null) {
-      msg = null;
-    }
-    if (msg) {
-      $('#error').text(msg);
-    }
+    if (msg == null) msg = null;
+    if (msg) $('#error').text(msg);
     return $('#error').slideDown(function() {
       return setTimeout(function() {
         return $('#error').slideUp();
       }, 2000);
     });
   };
+
   window.configs = {};
+
   $(function() {
     $('[id^=hidden_]').each(function() {
       var key, val, __, _ref;
@@ -20,8 +18,5 @@
       val = $(this).val();
       return window.configs[key] = val;
     });
-    if (!$('#error').is(":empty")) {
-      return window.display_error();
-    }
+    if (!$('#error').is(":empty")) return window.display_error();
   });
-}).call(this);

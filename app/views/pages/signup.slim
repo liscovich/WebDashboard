@@ -1,0 +1,13 @@
+= content_for :javascripts do
+  == js "/app/signup.js"
+  
+#signup_container
+  form method='post' action='/user'
+    p
+      input type='text' name='username'
+    p
+      input type='text' name='email'
+    p
+      input type='text' name='password'
+    p
+      input type='submit' value='submit'

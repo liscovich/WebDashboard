@@ -24,6 +24,7 @@ class Game
   property :approved, Boolean, :default=>false
     
   has n, :gameusers
+  has n, :events
   has n, :hits
   has n, :users, :through=>:gameusers
 

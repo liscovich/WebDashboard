@@ -144,6 +144,11 @@ get "/game/:id" do
   slim :"pages/join"
 end
 
+get "/game/:id/dashboard" do
+  @game = Game.get params[:id]
+  slim :"pages/game_dashboard"
+end
+
 get "/game/:id/hit_details" do
   @game = Game.get params[:id]
   slim :"pages/hit_detail"
@@ -184,20 +189,48 @@ get "/hit/:id/dispose" do
   flash_back "You disposed of a HIT!"
 end
 
+
+before "/hit/:id/*" do
+  @hit = RTurk::Hit.find(params[:id])
+  flash_back "Cannot find HIT!" if @hit.nil?
+  pass
+end
+
 get "/hit/:id/approve" do
-  h = RTurk::Hit.find(params[:id])
-  flash_back "Cannot find HIT!" if h.nil?
-  h.assignments.each do |a|
+  @hit.assignments.each do |a|
     a.approve! if a.status=='Submitted'
   end  
-  h.expire!
+  @hit.expire!
   flash_back "You approved hit id #{params[:id]}!"
 end
 
+get "/hit/:id/reject" do
+  @hit.assignments.each do |a|
+    a.reject! if a.status=='Submitted'
+  end
+  @hit.expire!
+  flash_back "You rejected hit id #{params[:id]}"
+end
+
+get "/hit/:id/bonus" do
+  @hit.assignments.each do |a|
+    a.bonus!(params[:amount], params[:reason])
+  end
+  @hit.expire!
+  flash_back "You bonused hit id #{params[:id]} with amount #{params[:amount]}"
+end
+
 get "/hit/:id/dispose" do
-  h = RTurk::Hit.find(params[:id])
-  h.dispose!
+  @hit.dispose!
   redirect back
+end
+
+get "/signup" do
+  slim :"pages/signup"
+end
+
+get "/user/:id" do
+  @user = User.get params[:id]
 end
 
 post "/user" do

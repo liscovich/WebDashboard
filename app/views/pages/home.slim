@@ -102,4 +102,16 @@
                           span== "Waiting for submission..."
                       .approve_game_controls
                         - if assignment and assignment.status=='Submitted'
-                          a.btn.success.game-hit href="/hit/#{hit.id}/approve" Approve
+                          .top_game_controls
+                            a.btn.success.game-hit href="/hit/#{hit.id}/approve" Approve
+                            a.btn.danger.game-hit href="/hit/#{hit.id}/reject" Reject
+                          .bottom_game_controls
+                            form method="get" action="/hit/#{hit.id}/bonus"
+                              p 
+                                label Amount
+                                input type='text' name='amount'
+                              p
+                                label Reason
+                                textarea name='reason'
+                              p
+                                input type='submit' value='Give Bonus'
