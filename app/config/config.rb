@@ -4,14 +4,22 @@ use Rack::Flash, :sweep=>true
 
 Compass.add_project_configuration(ROOT + '/config/compass.config')  
 
-db_string = if DEV then "mysql://root:caC1tuS23@localhost/econ" else "mysql://root:hcpLab180@localhost/econ" end
+db_string = if DEV then "mysql://root:@localhost/econ" else "mysql://root:hcpLab180@localhost/econ" end
 DataMapper.setup :default, db_string
 DataMapper::Logger.new($stdout, :debug)
 
 AWS_KEY = 'AKIAJU5ZLYKXW4HJHOSQ'
 AWS_SECRET = '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'
+
 RTurk.setup(AWS_KEY, AWS_SECRET, :sandbox => true)
 RTurk::logger.level = Logger::DEBUG if DEV
+MTURK_SUBMIT_URL = RTurk.sandbox? ? "https://workersandbox.mturk.com/mturk/externalSubmit" : "http://www.mturk.com/mturk/externalSubmit"
+
+HIT_TYPE = RTurk::RegisterHITType.create(:title => "Come play a card's game!") do |hit_type|
+  hit_type.description = "More card games!"
+  hit_type.keywords = 'card, game, economics'
+  hit_type.reward = 0.01
+end
 
 DOMAIN_NAME = "klikker.net"
 WINDOWS_IP = "50.57.141.31"

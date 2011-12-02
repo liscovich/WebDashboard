@@ -1,4 +1,48 @@
 helpers do
+  def difftime(diff,resolution=1)
+    res = { :year   => 24*60*60*30*365,
+            :month  => 24*60*60*30,
+            :day    => 24*60*60,
+            :hour   => 60*60,
+            :minute => 60,
+            :second => 1}
+
+    count = 0
+    str   = ''
+    res.each do |name,thres|
+      if(diff>=thres)
+        val = (diff/thres).floor
+        if(count>0)
+          str+=" "
+        end
+        str+="#{val} #{name}"
+        if(val>1)
+          str+="s"
+        end
+        diff-=val*thres
+        count+=1
+      end
+      if count>=resolution
+        break
+      end
+    end
+    if(str.length==0)
+      str="1 second"
+    end
+    str.strip
+  end
+  
+  def timeago(start,resolution=1)
+    str = start.to_s
+    return "" if str==""
+    difftime(Time.now-Time.parse(str),resolution)
+  end
+  
+  def format_time(time)
+    t = Time.parse(time.to_s)
+    t.strftime("%Y-%m-%d %H:%M:%S")
+  end
+
   def root_url
     "#{request.host}#{(request.port!=80) ? ":#{request.port}" : ''}"
   end

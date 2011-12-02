@@ -1,11 +1,13 @@
 window.gst = null
 
 $ ->
+  $('.slider').slider()
+
   window.gst = new game_state_tracker(2000)
-  
+
   setTimeout =>
     window.gst.fetch_state()
-  , 3000
+  , 5000
 
 class game_state_tracker
   constructor: (@poll_freq)->
@@ -35,5 +37,3 @@ class game_state_tracker
         alert "game started"
       when 'game_ended'
         alert "game ended!"
-
-    

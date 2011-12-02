@@ -12,7 +12,7 @@ html
     - if @hiddens
       - @hiddens.each do |k,v|
         input type='hidden' id='hidden_#{k}' value=v
-    #error.alert-message.error class=(flash[:error].nil? ? 'hide' : '') ==flash[:error]
+    #error.alert-message.warning class=(flash[:error].nil? ? 'hide' : '') ==flash[:error]
     #header
     #middle.container== yield
     #footer

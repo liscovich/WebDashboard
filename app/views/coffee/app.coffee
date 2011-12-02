@@ -1,3 +1,12 @@
+
+window.display_error = (msg=null)->
+  $('#error').text(msg) if(msg)
+  
+  $('#error').slideDown ->
+    setTimeout ->
+      $('#error').slideUp()
+    , 2000
+
 window.configs = {}
 
 $ ->
@@ -6,7 +15,6 @@ $ ->
     val = $(@).val()
     window.configs[key] = val
   unless $('#error').is(":empty")
-    $('#error').slideDown ->
-      setTimeout ->
-        $('#error').slideUp()
-      , 2000
+    window.display_error()
+
+

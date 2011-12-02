@@ -1,0 +1,5 @@
+h1 Game #{@game.id}
+a.btn.primary href=@game.rturk_url Rturk
+#assignment
+  - @hit.assignments.each do |a|
+    .assignment==a.status

@@ -35,29 +35,33 @@ Dir[ROOT+"/controllers/*.rb"].each{ |f| require f}
 require ROOT + '/config/config'
 require ROOT + '/helpers'
 
-get "/" do
+get "/admin_console" do
   
   slim :"pages/home"
 end
 
 post "/game" do
+  p params.inspect
   g = Game.new
+  g.created_at = Time.now
   g.title = params[:title]
   g.description = params[:description]
-  g.trialid = params[:trial_id]
   g.contprob = params[:cont_prob]
   g.cost_defect = params[:cost_defect]
   g.cost_coop = params[:cost_coop]
-  g.ind_payoff_shares = params[:ind_payoff_shares]
+  p params[:ind_payoff_shares].to_f
+  g.ind_payoff_shares = params[:ind_payoff_shares].to_f
   g.init_endow = params[:init_endow]
   g.totalplayers = params[:total_subjects]
   g.humanplayers = params[:human_subjects]
   g.save
 
+  flash_back(g.errors.full_messages.first) unless g.errors.empty?
+  
   redirect_url = URI::escape("http://#{root_url}/game/#{g.id}")
 
   uri = URI("http://#{WINDOWS_SERVER_IP}/new")
-  param = "-session=#{g.id} -server=#{WINDOWS_IP}:#{WINDOWS_PHOTON_PORT} -totalPlayers=#{params[:total_subjects]} -humanPlayers=#{params[:human_subjects]} -probability=0.8 -initialEndowments=100 -payout=0.6 -cardLowValue=0 -cardHighValue=10 -batchmode"
+  param = "-session=#{g.id} -server=#{WINDOWS_IP}:#{WINDOWS_PHOTON_PORT} -totalPlayers=#{params[:total_subjects]} -humanPlayers=#{params[:human_subjects]} -probability=#{g.contprob} -initialEndowments=#{g.init_endow} -payout=#{g.ind_payoff_shares} -cardLowValue=#{g.cost_defect} -cardHighValue=#{g.cost_coop} -batchmode"
 
   res = Net::HTTP.post_form(uri, 'id'=>g.id, 'instance'=>'test', 'args'=>param)
 
@@ -75,22 +79,23 @@ post "/game" do
   #end
   
   g.humanplayers.times do
-    hitt = RTurk::Hit.create(:title => "Play an econ game!" ) do |hit|
-      hit.assignments = 15
-      hit.description = 'Come play a game!'
-      hit.question("http://econ.demo.s3.amazonaws.com/frame.html?redirect_url=#{redirect_url}" , :frame_height => 1000)
-      #http://#{TARGET_SERVER_IP}/game/frame
-      hit.reward = 0.05
-      hit.duration = 240
-      #hit.auto_approval = 1
+
+    hitt = RTurk::Hit.create(:title => "Come play a card game!") do |hit|
+      hit.hit_type_id = HIT_TYPE.type_id
+      hit.assignments = 1
+      hit.description = "More card games!"
+      hit.question("http://card.demo.s3.amazonaws.com/frame.html?redirect_url=#{redirect_url}" , :frame_height => 1000)
+      hit.keywords = 'card, game, economics'
+      hit.reward = 0.01
       hit.lifetime = 240
-      #hit.qualifications.add :approval_rate, { :gt => 80 }
+      hit.duration = 240
     end
 
     h = Hit.new
     h.hitid = hitt.id
     h.url = hitt.url
     h.game_id = g.id
+    h.sandbox = RTurk.sandbox?
     h.save
   end
 
@@ -109,11 +114,18 @@ get "/game/frame" do
   slim :"/pages/game_frame", :layout=>false
 end
 
+get "/game/:id/state" do
+  g = Game.get params[:id]
+  [g.state, g.state_name].to_json
+end
+
 get "/game/:id/delete" do
   g = Game.get(params[:id])
   
-  h = RTurk::Hit.find(g.hit_id)
-  h.expire! if h
+  g.hits.each do |h|
+    hh = RTurk::Hit.find(h.hitid)
+    hh.expire! if hh
+  end
 
   g.destroy!
   redirect back
@@ -121,15 +133,12 @@ end
 
 get "/game/:id" do
   @game = Game.get params[:id]
+  flash_back("Cannot find game!") if @game.nil?
+  if params[:hitId]
+    @hit = RTurk::Hit.find(params[:hitId])
+  end
   @hiddens = {
-    :webplayer=> "http://#{WINDOWS_SERVER_IP}/instance/#{@game.id}.unity3d"
-  }
-  slim :"pages/join"
-end
-
-get "/game/:id/join" do
-  @game = Game.get params[:id]
-  @hiddens = {
+    :gameid=>@game.id,
     :webplayer=> "http://#{WINDOWS_SERVER_IP}/instance/#{@game.id}.unity3d"
   }
   slim :"pages/join"
@@ -137,18 +146,52 @@ end
 
 get "/game/:id/hit_details" do
   @game = Game.get params[:id]
-  @hit = RTurk::Hit.find(@game.hit_id)
   slim :"pages/hit_detail"
 end
 
 get "/game/:id/approve" do
   g = Game.get params[:id]
-  h = RTurk::Hit.find(g.hit_id)
+  g.hits.each do |hit|
+    h = RTurk::Hit.find(hit.hitid)
+    h.assignments.each do |a|
+      a.approve! if a.status=='Submitted'
+    end  
+    g.update!(:approved=>true)
+    h.expire!
+  end
+  flash_back "You approved all assignments!"
+end
+
+get "/hit/dispose_all" do
+  p1 = fork do
+    hits = RTurk::Hit.all_reviewable
+    hits.each do |hit|
+      hit.expire!
+      hit.assignments.each do |a|
+        a.approve!
+      end
+      hit.dispose!
+    end
+  end
+  Process.detach p1
+
+  flash_back "Disposed all hits!"
+end
+
+get "/hit/:id/dispose" do
+  h = RTurk::Hit.find(params[:id])
+  h.dispose! if h
+  flash_back "You disposed of a HIT!"
+end
+
+get "/hit/:id/approve" do
+  h = RTurk::Hit.find(params[:id])
+  flash_back "Cannot find HIT!" if h.nil?
   h.assignments.each do |a|
     a.approve! if a.status=='Submitted'
   end  
-  g.update!(:approved=>true)
-  redirect back
+  h.expire!
+  flash_back "You approved hit id #{params[:id]}!"
 end
 
 get "/hit/:id/dispose" do

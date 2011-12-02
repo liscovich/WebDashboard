@@ -3,10 +3,11 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   window.gst = null;
   $(function() {
+    $('.slider').slider();
     window.gst = new game_state_tracker(2000);
     return setTimeout(__bind(function() {
       return window.gst.fetch_state();
-    }, this), 3000);
+    }, this), 5000);
   });
   game_state_tracker = (function() {
     function game_state_tracker(poll_freq) {

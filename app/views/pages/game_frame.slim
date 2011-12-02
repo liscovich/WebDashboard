@@ -1,0 +1,65 @@
+doctype frameset
+html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+  head
+    == js "/jquery.min.js"
+    javascript:
+      function gup( name )
+      {
+        var regexS = "[\\?&]"+name+"=([^&#]*)";
+        var regex = new RegExp( regexS );
+        var tmpURL = window.location.href;
+        var results = regex.exec( tmpURL );
+        if( results == null )
+          return "";
+        else
+          return results[1];
+      }
+      function decode(strToDecode)
+      {
+        var encoded = strToDecode;
+        return unescape(encoded.replace(/\+/g,  " "));
+      }
+    == css "/game_frame.css"
+  body
+    h1 Game Frame!
+    /form#mturk_form method="post" action="http://www.mturk.com/mturk/externalSubmit"
+    /  input name='assignmentId' id='assignmentId' value=params[:AssignmentId]
+    /  input type='text' name='some text'
+    /  input type='submit' value='uhh'
+    
+    .row
+      label Game URL
+      #redirect_container
+    .row
+      label Worker ID
+      span#fillin_workerId
+    .row
+      label hit ID
+      span#fillin_hitId
+    .row
+      label assignmentID
+      span#fillin_assignmentId
+    javascript:
+      var params = {}
+      $('[id^=fillin_]').each(function(){
+        var id = $(this).attr('id').split('_')[1];
+        var param = gup(id);
+        
+        if(param!=""){
+          $(this).html(decode(param));
+          params[id] = param;
+        }
+      });
+
+      var worker_id = decode(gup('workerId'));
+      var redirect_url = decode(gup('redirect_url'));
+      
+      if(params['workerId'])
+      {
+        $('#redirect_container').html("<a href='#' id='redirect_link'>Click to continue to experiment!</a>");
+        $('#redirect_link').click(function(){
+          var full_path = redirect_url+"?"+$.param(params);
+          window.open(full_path,'_blank');
+          return false;
+        })
+      }
