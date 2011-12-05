@@ -8,35 +8,37 @@ window.get_parameter = (name)->
   else
     return decodeURIComponent(results[1].replace(/\+/g, " "))
 
+window.gt = null
 $ ->
-  gt = new game_tracker(window.configs.gameid, 2000)
+  window.gt = new game_state_tracker_webclient(window.configs.gameid, 2000)
 
   setTimeout ->
-    gt.fetch_state()
+    window.gt.fetch_state()
   , 5000
 
   $('#submit_mturk').click ->
     $(@).fadeOut()
-    window.display_error("You successfully submitted this assignment!")
-
-class game_tracker
-  constructor: (@game_id, @poll_freq)->
-    @run = true
-
-  fetch_state: =>
-    return unless @run
-    $.getJSON "/game/#{@game_id}/state", (o)=>
-      console.log(o)
-      @process(o)
-      
-      setTimeout =>
-        @fetch_state()
-      , @poll_freq
+    $('#game_state').html "You submitted your HIT! <div> Go play <a href='/trials'>more games</a></div>"
+    #window.display_error("You successfully submitted this assignment!")
   
+  $('#submit_non_mturk').click ->
+    console.log {user_id:window.configs.userid,game_id:window.configs.gameid}
+    $(@).fadeOut()
+    $.get $(@).attr('href'), {user_id:window.configs.userid,game_id:window.configs.gameid}, (o)->
+      $('#game_state').html "You submitted your exercise, please wait for someone to pay you!<div> Mean while, go play <a href='/trials'>more Games</a></div>"
+    false
+
+
+class game_state_tracker_webclient extends game_state_tracker
   process: (obj)=>
-    [state, state_name] = obj
-    $('#game_state').text state_name
-    switch state
+    return if obj.event_type isnt 'gamestate_update'
+    $('#game_state').text obj.state_name
+    switch obj.state
       when 'game_ended'
         @run = false
         $('#submit_row').slideDown()
+        $.get "/gameuser/get_earnings", {user_id: window.configs.userid, game_id: window.configs.gameid}, (o)->
+          [status,data] = o
+          if(status)
+            $('#earnings').text data
+            $('#earnings_').slideDown()

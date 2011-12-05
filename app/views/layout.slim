@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title Econ Game
+    title AZ - Trials
     == js :jquery
     == js '/app/app.js'
     == yield_content :javascripts
@@ -12,7 +12,41 @@ html
     - if @hiddens
       - @hiddens.each do |k,v|
         input type='hidden' id='hidden_#{k}' value=v
-    #error.alert-message.warning class=(flash[:error].nil? ? 'hide' : '') ==flash[:error]
-    #header
-    #middle.container== yield
-    #footer
+    - if is_logged_in?
+      .topbar
+        .topbar-inner
+          .container-fluid
+            a.brand href='#' AZ
+            - unless @hide_navigation
+              ul.nav
+                - if is_researcher
+                  li
+                    a href='/experiments' Experiments
+                li
+                  a href='/trials' Trials
+            - if is_logged_in?
+              p.pull-right 
+                | Logged in as
+                a href='/user/#{session[:id]}' #{session[:username] || "User #{session[:id]}"} (#{session[:role]})
+                a.rt href="/logout" Logout
+    .container-fluid
+      .sidebar
+        == yield_content :sidebar
+        - unless @no_default_side_bar
+          .well
+            h5 Deployed Experiments
+            ul
+              li
+                a href='#' Public Goods Game
+      .content
+        #status_container
+          #error.alert-message.warning class=(flash[:error].nil? ? 'hide' : '') ==flash[:error]
+        - if @hero_unit_title
+          .hero-unit
+            h1== @hero_unit_title
+            p== @hero_unit_content || "Vestibulum id ligula porta felis euismod semper. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit."
+        == yield_content :additional_scripts
+        .row
+          .span17==yield
+      footer
+          p &copy; Mturk Group 2011

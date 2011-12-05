@@ -21,6 +21,13 @@ HIT_TYPE = RTurk::RegisterHITType.create(:title => "Come play a card's game!") d
   hit_type.reward = 0.01
 end
 
+use OmniAuth::Builder do
+  provider :developer if DEV
+  provider :facebook, '298008136906418', 'eba849e808cf4d6b71fd37d32362d5ba', { :scope => 'status_update, publish_stream, offline_access' } 
+  #provider :open_id, :store => OpenID::Store::Filesystem.new('/tmp')
+  #provider :twitter, 'consumerkey', 'consumersecret'
+end
+
 DOMAIN_NAME = "klikker.net"
 WINDOWS_IP = "50.57.141.31"
 WINDOWS_PHOTON_PORT = "5055"

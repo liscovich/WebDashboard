@@ -17,24 +17,33 @@ class Game
   property :cost_defect, Integer
   property :cost_coop, Integer
   property :ind_payoff_shares, Decimal, :scale=>2
-
+  property :exchange_rate, Decimal, :scale=>3
+  
   property :hit_id, String, :length=>100
   property :rturk_url, String, :length=>100
   
   property :approved, Boolean, :default=>false
-    
+  
+  property :user_id, Integer
+  belongs_to :user
+      
   has n, :gameusers
+  has n, :users, :through=>:gameusers
   has n, :events
   has n, :hits
   has n, :users, :through=>:gameusers
 
-  def state_name
+  def self.get_state_name(state)
     h = {
       'initialized' => 'Waiting for server...',
       'masterclient_started' => 'Waiting for players',
       'game_started' => 'Game in progress',
       'game_ended' => 'Game over',
     }
-    h[self.state]
+    h[state]
+  end
+
+  def state_name
+    Game.get_state_name(self.state)
   end
 end

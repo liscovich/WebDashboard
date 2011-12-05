@@ -16,48 +16,47 @@
   javascript:
     function ProvideSessionData()
     {
-        var params = "#{@game.id}" + "|" + "#{WINDOWS_IP}" + "|" + "#{WINDOWS_PHOTON_PORT}" + "|" + "#{params[:workerId]}" + "|" + "false";
+        var params = "#{@game.id}" + "|" + "#{WINDOWS_IP}" + "|" + "#{WINDOWS_PHOTON_PORT}" + "|" + "#{session[:id]}" + "|" + "false";
         GetUnity().SendMessage("WebPageCommunicator","Initialize",params);
     }
-#join_container
-  /.row
-    /h1 Game #{@game.id}
-  .row
-    .span11
-      - if params[:workerId]
-        .row
-          #game_window
-            .content
-              #unityPlayer
-                .missing
-                  a href="http://unity3d.com/webplayer/" title="Unity Web Player. Install now!"
-                    img alt="Unity Web Player. Install now!" src="http://webplayer.unity3d.com/installation/getunity.png" width="193" height="63"
-            p.footer 
-              | &laquo; created with 
-              a href="http://unity3d.com/unity/" title="Go to unity3d.com" Unity
-              | &raquo;
-      - else
-        .alert-message.warning You cannot join unless you are from Amazon
-    .span5
-      .row
-        /h2==@game.title
-        /h3==@game.description
-        h2 Status:
-        h3.paddingleft#game_state==@game.state_name
-      .row
-        h2 Task Information:
-      .row.vm.paddingleft
+
+
+= content_for :sidebar do
+  .well
+    h2 Status:
+    h3.paddingleft#game_state==@game.state_name
+  - if params[:workerId]
+    .well
+      h2 Task Info:
+      .vm.smaller
         div WorkerId
         span==params[:workerId]
-      .row.vm.paddingleft
+      .vm.smaller
         div AId
         span.small==params[:assignmentId]
-      - if @hit
-        - assignment = @hit.assignments.first
-        - if assignment
-          .row
-            label Hit Status
-            .hit_status==assignment.status || "Accepted"
-        - else
-          #submit_row.row.margintop class=(@game.state=='game_ended' ? '' : 'hide')
-            a.btn.success.large#submit_mturk target="_blank" href="#{MTURK_SUBMIT_URL}?assignmentId=#{params[:assignmentId]}&workerId=#{params[:workerId]}&hitId=#{params[:hitId]}&redirect_url=#{root_url+'/game/thanks'}" Submit HIT
+  #submit_row.well.margintop class=(@game.state=='game_ended' ? '' : 'hide')
+    - if @hit
+      - assignment = @hit.assignments.first
+      - if !assignment
+        a.btn.success.large#submit_mturk target="mturkresult" href="#{MTURK_SUBMIT_URL}?assignmentId=#{params[:assignmentId]}&workerId=#{params[:workerId]}&hitId=#{params[:hitId]}&redirect_url=#{root_url+'/game/thanks'}" Submit HIT
+        iframe.hide name='mturkresult'
+    - else
+      a.btn.success.large#submit_non_mturk href="/gameuser/record_submission" Submit for $
+    
+  #earnings_.vm.larger.hide
+    span You earned
+    span.green $
+    span#earnings
+
+.row
+  .span17
+    #game_window
+      .content
+        #unityPlayer
+          .missing
+            a href="http://unity3d.com/webplayer/" title="Unity Web Player. Install now!"
+              img alt="Unity Web Player. Install now!" src="http://webplayer.unity3d.com/installation/getunity.png" width="193" height="63"
+      p.footer 
+        | &laquo; created with 
+        a href="http://unity3d.com/unity/" title="Go to unity3d.com" Unity
+        | &raquo;        

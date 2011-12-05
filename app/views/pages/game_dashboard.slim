@@ -1,6 +1,18 @@
 = content_for :javascripts do
+  == js :json
   == js "/app/dashboard.js"
 #dashboard_container
-  h1 Game Dashboard
   #dashboard_inner
-    == @game.inspect
+    #game_stats
+    h1#game_state
+    #game_rounds
+      table.zebra-striped
+        thead
+          tr
+            th Round #
+            th.blue Player
+            th.blue Card Choice
+            th.blue Points gained
+            th.blue Total points
+        tbody#dashboard_tbody
+#debug.hide
