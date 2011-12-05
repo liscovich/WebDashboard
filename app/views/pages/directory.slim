@@ -1,0 +1,8 @@
+#all_users
+  h3 All users
+  - User.all.each do |u|
+    .all_user.vm
+      a.all_user-username href="/user/#{u.id}"== u.username || "User ##{u.id}"
+      .role== u.role
+      .created_at created #{timeago(u.created_at,2)}
+      .games-played played #{u.gameusers.count || 0} games

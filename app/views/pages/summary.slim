@@ -1,0 +1,43 @@
+.row
+  h1 Game #{@game.id} Summary
+  a href="/admin_console" &laquo; Back to games
+.row
+  #approve_game
+    - @game.hits.each do |h|
+      - hit = RTurk::Hit.find(h.hitid)
+      - if hit
+        .approve_game.vm
+          - assignment = hit.assignments.empty? ? nil : hit.assignments.first
+          .approve_game_state
+            - if assignment
+              - gameuser = fetch_gameuser_by_hit_and_worker(hit.id, assignment.worker_id)
+              .mturk_user_name== gameuser.user.get_name
+              .approve_worker_id==assignment.worker_id
+              .label.info== assignment.status
+            - if assignment and assignment.status=='Submitted'
+              span=="Assignment awaiting approval!"
+            - elsif assignment and assignment.status=='Approved'
+              span== "Assignment Approved"
+            - else
+              span== "Waiting for submission..."
+          .approve_game_controls
+            - if assignment and assignment.status=='Submitted'
+              .earnings
+                span.green $
+                span #{sprintf('%.2f', gameuser.game.exchange_rate * gameuser.final_score)}
+              .top_game_controls.vm
+                a.btn.success.game-hit href="/hit/#{hit.id}/approve" Approve
+                a.btn.warning.game-hit href="/hit/#{hit.id}/reject" Reject
+                a.btn.success.game-hit href="/hit/#{hit.id}/bonus" Give Bonus
+                    
+  #non_mturk_approve_game
+    - @game.gameusers.all(:mturk=>false).each do |gu|
+      .non_mturk_user.vm
+        .non_mturk_user_name== gu.user.get_name
+        .earnings== display_decimal(2,gu.final_score * @game.exchange_rate)
+        .state==gu.state
+        - if gu.state!=:approved
+          a.btn href="/gameuser/#{gu.id}/pay" Pay
+        - else
+          span Paid!
+        

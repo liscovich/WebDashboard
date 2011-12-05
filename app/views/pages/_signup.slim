@@ -1,0 +1,26 @@
+h3== msg
+form method='post' action=url
+  p
+    label Username
+    .input
+      input type='text' name='username'
+  p
+    label Email
+    .input
+      input type='text' name='email'
+  p
+    label Password
+    .input
+      input type='password' name='password'
+  p
+    label Confirm Password
+    .input
+      input type='password' name='confirm_password'
+  - if ask_research
+    p
+      label I am a Researcher
+      .input
+        input type='checkbox' name='is_researcher'
+  p
+    .input
+      input.btn.primary type='submit' value='Sign up'

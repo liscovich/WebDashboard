@@ -1,0 +1,93 @@
+#profile_container
+  .row
+    a href='/' Back to list of users
+  .row
+    .span8
+      h1  #{@user.username || "User ##{@user.id}"} (#{@user.role})
+      ul#user_subnav.inline-list
+        li
+          a href="/user/#{@user.id}" Profile
+        - if is_me?(@user)
+          li
+            a href="/user/#{@user.id}/edit" Edit
+      #profile
+        h3 Profile
+        - if is_researcher
+          - unless @user.institution.nil?
+            #institution= @user.institution
+          - unless @user.location.nil?
+            #location== @user.location
+          - unless @user.telephone.nil?
+            #tel==@user.telephone
+        - else
+          - unless @user.age.nil?
+            #age #{@user.age} years old
+          - unless @user.location.nil?
+            #location= @user.location
+          - unless @user.gender.nil?
+            #gender= @user.get_gender
+          - unless @user.bio.nil?
+            #bio= @user.bio
+      #earnings
+        h3 Earnings
+        #paid_earning
+          span Paid earnings:
+          span $
+          span==display_decimal(2, @user.get_paid_balance || 0)
+        #unpaid_earning
+          span Unpaid earnings:
+          span $
+          span==display_decimal(2,@user.get_unpaid_balance || 0)
+        #rejected_earning
+          span Rejected earnings:
+          span $
+          span==display_decimal(2, @user.get_rejected_balance || 0)
+        #total_earning
+          span Total earnings:
+          span $
+          span==display_decimal(2, @user.get_total_earned || 0)
+      #auth_methods
+        h3 Linked accounts
+        - @user.authmethods.each do |a|
+          .auth_method.vm class="img-#{a.image_id}-lt"
+            .auth_method_type==a.auth_type
+            .auth_method_id==a.auth_id
+        - if is_me?(@user) and !@authmethods_left.empty?
+          #add_authmethod
+            - if @authmethods_left.include? 'facebook'
+              #add_facebook_auth
+                a href="/auth/facebook" Add your facebook account!
+            - if @authmethods_left.include? 'mturk'
+              #add_mturk_auth
+                form method="post" action="/authmethod/mturk"
+                  p
+                    label MTurk ID
+                    .input
+                      input type='text' name='mturk_id'
+                  p
+                    .input
+                      input type='submit' value='Link MTurk' 
+    .span8
+      - if is_researcher
+        #created_games
+          h2 List of created games
+          #list_games
+            - @user.games.each do |g|
+              .game.vm
+                span Game ##{g.id}
+                a href="/game/#{g.id}/dashboard" Dashboard
+                a href="/game/#{g.id}/summary" Summary
+                span created #{timeago(g.created_at,2)}
+      #games
+        h2 Game History
+        - unless @user.gameusers.empty?
+          #game_histories
+            - @user.gameusers.each do |gu|
+              .game_info.vm
+                a.game href="/game/#{gu.game_id}/summary" Game ##{gu.game_id}
+                .status== gu.state
+        - else
+          span No games yet!
+        - unless @user.complete
+          #signup_complete
+            == partial :"pages/_signup", :url=>'/user/complete', :msg=>"Complete your registration!", :ask_research=>false
