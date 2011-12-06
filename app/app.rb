@@ -262,6 +262,7 @@ end
 
 get "/game/:id/summary" do
   flash_back "You must be a researcher!" unless is_researcher
+  @hero_unit_title = "Game Summary"
   @game = Game.get params[:id]
   slim :"pages/summary"
 end
