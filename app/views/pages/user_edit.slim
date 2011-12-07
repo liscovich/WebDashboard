@@ -1,10 +1,5 @@
 h1== @user.username || "User ##{@user.id}"
-ul#user_subnav
-  li
-    a href="/user/#{@user.id}" Profile
-  - if is_me?(@user)
-    li
-      a href="/user/#{@user.id}/edit" Edit
+== partial :"pages/_usernav", :sel=>'edit'
 #user_editing
   #change_password
     h4 Change password

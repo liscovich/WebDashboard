@@ -22,7 +22,7 @@ html
                 - if is_researcher
                   li
                     a href='/experiments' Experiments
-                li
+                li class=(if request.path=='/trials' then 'active' else '' end)
                   a href='/trials' Trials
             - if is_logged_in?
               p.pull-right 

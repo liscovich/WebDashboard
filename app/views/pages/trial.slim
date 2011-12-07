@@ -40,4 +40,5 @@ p
                 - else
                   a.btn.primary href="/game/#{g.id}/summary" Summary
               - else
-                a.btn.primary href="/game/#{g.id}" Join
+                - if g.state!='game_ended'
+                  a.btn.primary href="/game/#{g.id}" Join

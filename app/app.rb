@@ -89,11 +89,7 @@ get '/auth/:provider_id/callback' do
     redirect_id = u.id
   end
   redirect "/user/#{redirect_id}"
-end 
-
-get "/admin_console" do
-  slim :"pages/home"
-end
+end  
 
 post "/game" do
   flash_back "You cannot create a game unless you are a researcher!" unless is_researcher
@@ -199,6 +195,8 @@ get "/game/events" do
       :choice       => e.choice,
       :round_id     => e.round_id,
       :total_score  => e.total_score,
+      :is_ai        => e.is_ai,
+      :ai_id        => e.ai_id,
       :score        => e.score
     }.reject{|k,v| v.nil? }
   }.to_json
@@ -262,7 +260,7 @@ end
 
 get "/game/:id/summary" do
   flash_back "You must be a researcher!" unless is_researcher
-  @hero_unit_title = "Game Summary"
+  @hero_unit_title = "Game #{params[:id]} Summary"
   @game = Game.get params[:id]
   slim :"pages/summary"
 end
