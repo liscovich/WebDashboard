@@ -5,7 +5,7 @@ gem 'rails', '3.2.0'
 #gem 'bson_ext'
 gem 'mysql2'
 gem "haml"
-#gem "jquery-rails"
+gem "jquery-rails"
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -19,14 +19,19 @@ group :assets do
 end
 
 gem 'yajl-ruby'
+#gem 'sass'
 gem "compass", ">= 0.11.7"
 #gem 'compass-rails', :git => 'git://github.com/Compass/compass-rails.git'
 
-gem 'slim' #TODO remove
+gem 'slim' #TODO migrate to haml and remove
 gem 'rturk'
 
+##### AUTH #####
+gem 'devise'
+
 gem 'omniauth'
-gem 'omniauth-facebook'
+gem "omniauth-twitter"
+#gem 'omniauth-facebook'
 #gem 'openid'
 #gem 'omniauth-openid'
 

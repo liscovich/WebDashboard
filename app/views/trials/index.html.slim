@@ -36,9 +36,9 @@ p
             p
               - if current_user.researcher?
                 - if g.state!='game_ended'
-                  a.btn.primary href="/game/#{g.id}/dashboard" View
+                  a.btn.primary href="/games/#{g.id}/dashboard" View
                 - else
-                  a.btn.primary href="/game/#{g.id}/summary" Summary
+                  a.btn.primary href="/games/#{g.id}/summary" Summary
               - else
                 - if g.state!='game_ended'
                   a.btn.primary href="/game/#{g.id}" Join

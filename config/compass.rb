@@ -11,7 +11,7 @@ images_dir = "../public/images"
 http_images_path = "/images"
 
 output_style = :compressed
-environment = :production
+environment = Compass::AppIntegration::Rails.env
 
 relative_assets = true
 

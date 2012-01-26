@@ -1,4 +1,6 @@
 WebDashboard::Application.routes.draw do
+  devise_for :users, :controllers => {:registrations => 'registrations'}
+
   resources :logs, :only => [:index] do
     collection do
       get :delete_all
@@ -55,7 +57,8 @@ WebDashboard::Application.routes.draw do
     end
   end
 
+  resources :authentications
   match '/auth/:provider/callback' => 'authentications#create'
   
-  root :to => 'home#show'
+  root :to => 'trials#index'
 end

@@ -9,6 +9,10 @@ if defined?(Bundler)
   # Bundler.require(:default, :assets, Rails.env)
 end
 
+#Sass::Plugin.options[:template_location] = {
+#  "#{RAILS_ROOT}/app/assets/stylesheets" => "#{RAILS_ROOT}/public/stylesheets"
+#}
+
 module WebDashboard
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -52,6 +56,7 @@ module WebDashboard
 
     # Enable the asset pipeline
     config.assets.enabled = true
+    config.sass.load_paths << Compass::Frameworks['compass'].stylesheets_directory
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

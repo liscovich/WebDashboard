@@ -10,6 +10,5 @@
  *
  *= require_self
  *= require partials/_base
- *= require partials/_formalize
  *= require_tree .
 */

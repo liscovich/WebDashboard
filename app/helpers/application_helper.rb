@@ -97,13 +97,13 @@ module ApplicationHelper
 
   def css(*sources)
     sources.map do |s|
-      stylesheet_link_tag s.is_a?(Symbol) ? CSS[s] : s
-    end.join
+      stylesheet_link_tag(s.is_a?(Symbol) ? CSS[s] : s)
+    end.join.html_safe
   end
 
   def js(*sources)
     sources.map do |s|
-      javascript_include_tag s.is_a?(Symbol) ? JS[s] : s
-    end.join
+      javascript_include_tag(s.is_a?(Symbol) ? JS[s] : s)
+    end.join.html_safe
   end
 end

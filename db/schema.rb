@@ -11,16 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120122182536) do
+ActiveRecord::Schema.define(:version => 20120126205016) do
 
-  create_table "authmethods", :force => true do |t|
-    t.datetime "created_at"
-    t.string   "auth_type",  :limit => 50
-    t.string   "auth_id",    :limit => 50
-    t.integer  "user_id"
+  create_table "authentications", :force => true do |t|
+    t.integer "user_id"
+    t.string  "provider"
+    t.string  "uid"
   end
 
-  add_index "authmethods", ["auth_type", "auth_id"], :name => "unique_authmethods_u", :unique => true
+  add_index "authentications", ["provider", "uid"], :name => "index_authentications_on_provider_and_uid"
+  add_index "authentications", ["user_id"], :name => "index_authentications_on_user_id"
 
   create_table "events", :force => true do |t|
     t.datetime "created_at"
@@ -98,18 +98,16 @@ ActiveRecord::Schema.define(:version => 20120122182536) do
   end
 
   create_table "users", :force => true do |t|
-    t.datetime "created_at"
-    t.boolean  "complete"
-    t.string   "username",    :limit => 50
-    t.string   "email",       :limit => 50
-    t.string   "password",    :limit => 50
+    t.string   "email",                              :default => "",    :null => false
+    t.string   "encrypted_password",  :limit => 128, :default => "",    :null => false
+    t.datetime "remember_created_at"
     t.integer  "age"
-    t.string   "location",    :limit => 50
+    t.string   "location",            :limit => 50
+    t.string   "institution",         :limit => 50
+    t.string   "telephone",           :limit => 50
     t.text     "bio"
     t.boolean  "gender"
-    t.string   "institution", :limit => 50
-    t.string   "telephone",   :limit => 50
-    t.integer  "role",                      :default => 1
+    t.boolean  "admin",                              :default => false
   end
 
 end
