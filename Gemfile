@@ -4,17 +4,8 @@ gem 'rails', '3.2.0'
 #gem "mongo_mapper"
 #gem 'bson_ext'
 gem 'mysql2'
-
-#gem 'dm-mysql-adapter', '~>1.1.0'
-#gem 'dm-core', '~>1.1.0'
-#gem 'dm-timestamps', '~>1.1.0'
-#gem 'dm-validations', '~>1.1.0'
-#gem 'dm-serializer', '~>1.1.0'
-#gem 'dm-migrations', '~>1.1.0'
-#gem 'dm-aggregates', '~>1.1.0'
-#gem 'dm-pager', '~>1.1.0'
-#gem 'dm-types', '~>1.1.0'
-#gem 'do_mysql' # ??
+gem "haml"
+#gem "jquery-rails"
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -27,21 +18,17 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-gem 'jquery-rails'
-
-#gem 'sinatra'
-#gem 'sinatra-reloader'
-#gem 'rack-flash'
 gem 'yajl-ruby'
-gem 'compass'
+gem "compass", ">= 0.11.7"
+#gem 'compass-rails', :git => 'git://github.com/Compass/compass-rails.git'
 
-gem 'slim'
+gem 'slim' #TODO remove
 gem 'rturk'
 
 gem 'omniauth'
 gem 'omniauth-facebook'
 #gem 'openid'
-gem 'omniauth-openid'
+#gem 'omniauth-openid'
 
 group :development do
   gem "mongrel", '>= 1.2.0.pre2'

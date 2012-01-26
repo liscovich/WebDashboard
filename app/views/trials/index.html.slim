@@ -1,0 +1,44 @@
+= content_for :additional_scripts do
+  script src="http://code.jquery.com/jquery-1.5.2.min.js"
+  script src="http://autobahn.tablesorter.com/jquery.tablesorter.min.js"
+  javascript:
+    $(function() {
+      $("table#sortTrialTable").tablesorter({ sortList: [[0,0]] });
+    });
+
+h2 Ongoing trials
+p
+  table.zebra-striped#sortTrialTable
+    thead
+      tr
+        th #
+        th.blue Experiment
+        th.blue Trial Id
+        th.blue Started
+        th.blue Status
+        - if current_user.researcher?
+          th.blue MTurk Links
+        th.blue Action
+    tbody
+      - @games.each do |g|
+        tr
+          td==g.id
+          td Public Goods Game
+          td T#{g.id}
+          td==format_time(g.created_at)
+          td==g.state_name
+          td
+            ul
+              - g.hits.each do |h|
+                li
+                  a href=h.url Link ##{h.id}
+          td
+            p
+              - if current_user.researcher?
+                - if g.state!='game_ended'
+                  a.btn.primary href="/game/#{g.id}/dashboard" View
+                - else
+                  a.btn.primary href="/game/#{g.id}/summary" Summary
+              - else
+                - if g.state!='game_ended'
+                  a.btn.primary href="/game/#{g.id}" Join

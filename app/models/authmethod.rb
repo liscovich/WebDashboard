@@ -1,5 +1,9 @@
 class Authmethod < ActiveRecord::Base
+  TYPES = {:mturk => 'mturk'} #TODO add more
+
   belongs_to :user
+
+  scope :mturk, where(:auth_type => 'mturk')
 
   class << self
     def find_user_by_provider(provider, uid)

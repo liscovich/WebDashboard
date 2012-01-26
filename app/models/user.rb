@@ -55,6 +55,10 @@ class User < ActiveRecord::Base
     self.gender ? 'male' : 'female'
   end
 
+  def researcher?
+    role == 'researcher'
+  end
+
   def is_password?(pass)
     password = self.password[0..39]
     salt     = self.password[40..49]
@@ -69,12 +73,6 @@ class User < ActiveRecord::Base
 
   def initial_password_confirmation=(conf)
     @initial_password_confirmation = conf
-  end
-
-  def sign_in!(session)
-    session[:id] = self.id
-    session[:username] = self.username
-    session[:role] = self.role.to_s
   end
 
   def get_unpaid_balance

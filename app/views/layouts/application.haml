@@ -1,0 +1,53 @@
+!!!
+%html
+  %head
+    %title= content_for?(:title) ? yield(:title) : 'AZ - Trials'
+    = stylesheet_link_tag 'application'
+    /[if IE]
+      = stylesheet_link_tag 'ts/ie.css', :media => 'screen, projection'
+    = javascript_include_tag :defaults, 'app/app'
+    = csrf_meta_tag
+    = yield :head
+
+  %body
+    - if @hiddens
+      - @hiddens.each do |k,v|
+        %input{:type => 'hidden', :id => 'hidden_#{k}', :value => v}
+    - if logged_in?
+      .topbar
+        .topbar-inner
+          .container-fluid
+            %a{:class => 'brand', :href => '#'} AZ
+            - unless @hide_navigation
+              %ul.nav
+                - if is_researcher
+                  %li
+                    %a{:href => '/experiments'} Experiments
+                %li{:class => request.path == '/trials' ? 'active' : ''}
+                  %a{:href => '/trials'} Trials
+            - if is_logged_in?
+              %p{:class => 'pull-right'}
+                | Logged in as
+                %a{:href => '/user/#{session[:id]}'}= session[:username] || "User #{session[:id]} (#{session[:role]})"
+                %a{:class => 'rt', :href => "/logout"} Logout
+    .container-fluid
+      .sidebar
+        = content_for :sidebar
+        - unless @no_default_side_bar
+          .well
+            %h5 Deployed Experiments
+            %ul
+              %li
+                %a{:href => '#'} Public Goods Game
+      .content
+        #status_container
+          #error.alert-message.warning{:class => (flash[:error] ? '' :  'hide')}= flash[:error]
+        - if @hero_unit_title
+          .hero-unit
+            %h1= @hero_unit_title
+            %p= @hero_unit_content || "Vestibulum id ligula porta felis euismod semper. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit."
+        = yield :additional_scripts
+        .row
+          .span17= yield
+      %footer
+        %p &copy; Mturk Group 2011

@@ -1,1 +1,0 @@
-Compass.add_project_configuration(Rails.root.join('config/compass.config').to_s)
