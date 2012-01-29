@@ -1,5 +1,5 @@
 WebDashboard::Application.routes.draw do
-  devise_for :users, :controllers => {:registrations => 'registrations'}
+  devise_for :user, :controllers => {:registrations => 'registrations'}
 
   resources :logs, :only => [:index] do
     collection do
@@ -24,6 +24,8 @@ WebDashboard::Application.routes.draw do
     end
   end
 
+  resources :events, :only => :index
+
   resources :games do
     collection do
       get :delete_all
@@ -38,8 +40,7 @@ WebDashboard::Application.routes.draw do
       get :state
     end
 
-    resources :events, :only => :index
-    resources :users,  :only => [] do
+    resources :users,  :only => [], :controller => "games/users" do
       member do
         get :earnings
         get :record_submission

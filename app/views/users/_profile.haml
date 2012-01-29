@@ -1,0 +1,18 @@
+%h3 Profile
+
+- if user.researcher?
+  - unless user.institution.nil?
+    #institution= user.institution
+  - unless user.location.nil?
+    #location= user.location
+  - unless user.telephone.nil?
+    #tel= user.telephone
+- else
+  - unless user.age.nil?
+    #age= "#{user.age} years old"
+  - unless user.location.nil?
+    #location= user.location
+  - unless user.gender.nil?
+    #gender= user.gender.camelize
+  - unless user.bio.nil?
+    #bio= user.bio

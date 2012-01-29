@@ -17,8 +17,8 @@
     Manager.include(Spine.Events);
     function Manager() {
       this.controllers = [];
-      this.add.apply(this, arguments);
       this.bind('change', this.change);
+      this.add.apply(this, arguments);
     }
     Manager.prototype.add = function() {
       var cont, controllers, _i, _len, _results;
@@ -34,18 +34,19 @@
       controller.bind('active', __bind(function() {
         var args;
         args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
-        return this.trigger('change', controller, args);
+        return this.trigger.apply(this, ['change', controller].concat(__slice.call(args)));
       }, this));
-      controller.bind('destroy', __bind(function() {
+      controller.bind('release', __bind(function() {
         return this.controllers.splice(this.controllers.indexOf(controller), 1);
       }, this));
       return this.controllers.push(controller);
     };
     Manager.prototype.deactivate = function() {
-      return this.trigger('change', false, arguments);
+      return this.trigger.apply(this, ['change', false].concat(__slice.call(arguments)));
     };
-    Manager.prototype.change = function(current, args) {
-      var cont, _i, _len, _ref, _results;
+    Manager.prototype.change = function() {
+      var args, cont, current, _i, _len, _ref, _results;
+      current = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
       _ref = this.controllers;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -80,6 +81,49 @@
       return this;
     }
   });
+  Spine.Stack = (function() {
+    __extends(Stack, Spine.Controller);
+    Stack.prototype.controllers = {};
+    Stack.prototype.routes = {};
+    Stack.prototype.className = 'spine stack';
+    function Stack() {
+      var key, value, _fn, _ref, _ref2;
+      Stack.__super__.constructor.apply(this, arguments);
+      this.manager = new Spine.Manager;
+      _ref = this.controllers;
+      for (key in _ref) {
+        value = _ref[key];
+        this[key] = new value({
+          stack: this
+        });
+        this.add(this[key]);
+      }
+      _ref2 = this.routes;
+      _fn = __bind(function(key, value) {
+        var callback;
+        if (typeof value === 'function') {
+          callback = value;
+        }
+        callback || (callback = __bind(function() {
+          var _ref3;
+          return (_ref3 = this[value]).active.apply(_ref3, arguments);
+        }, this));
+        return this.route(key, callback);
+      }, this);
+      for (key in _ref2) {
+        value = _ref2[key];
+        _fn(key, value);
+      }
+      if (this["default"]) {
+        this[this["default"]].active();
+      }
+    }
+    Stack.prototype.add = function(controller) {
+      this.manager.add(controller);
+      return this.append(controller);
+    };
+    return Stack;
+  })();
   if (typeof module !== "undefined" && module !== null) {
     module.exports = Spine.Manager;
   }

@@ -1,0 +1,6 @@
+%ul.breadcrumb
+  %li{:class => (sel == 'profile' ? 'active' : '')}
+    = link_to 'Profile', user_path
+  - if signed_in?
+    %li{:class => (sel == 'edit' ? 'active' : '')}
+      = link_to 'Edit', edit_user_path

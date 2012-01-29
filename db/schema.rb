@@ -98,6 +98,7 @@ ActiveRecord::Schema.define(:version => 20120126205016) do
   end
 
   create_table "users", :force => true do |t|
+    t.string   "username",            :limit => 50
     t.string   "email",                              :default => "",    :null => false
     t.string   "encrypted_password",  :limit => 128, :default => "",    :null => false
     t.datetime "remember_created_at"
@@ -106,7 +107,8 @@ ActiveRecord::Schema.define(:version => 20120126205016) do
     t.string   "institution",         :limit => 50
     t.string   "telephone",           :limit => 50
     t.text     "bio"
-    t.boolean  "gender"
+    t.string   "gender"
+    t.string   "role"
     t.boolean  "admin",                              :default => false
   end
 

@@ -9,9 +9,10 @@ a href="/trials" &laquo; Back to games
         .approve_game_state
           - if assignment
             - gameuser = fetch_gameuser_by_hit_and_worker(hit.id, assignment.worker_id)
-            a.mturk_user_name href="/user/#{gameuser.user.id}" == gameuser.user.get_name
-            .approve_worker_id==assignment.worker_id
-            .label.info== assignment.status
+            - if gameuser && gameuser.user
+              a.mturk_user_name href="/user/#{gameuser.user.id}" == gameuser.user.get_name
+              .approve_worker_id==assignment.worker_id
+              .label.info== assignment.status
           - if assignment and assignment.status=='Submitted'
             span=="Assignment awaiting approval!"
           - elsif assignment and assignment.status=='Approved'
@@ -21,20 +22,19 @@ a href="/trials" &laquo; Back to games
         .approve_game_controls
           - if assignment and assignment.status=='Submitted'
             .earnings
-              span.green $
-              span #{sprintf('%.2f', gameuser.game.exchange_rate * gameuser.final_score)}
+              span #{number_to_currency('%.2f', gameuser.game.exchange_rate * gameuser.final_score)}
             .top_game_controls.vm
-              a.btn.success.game-hit href="/hit/#{hit.id}/approve" Approve
-              a.btn.warning.game-hit href="/hit/#{hit.id}/reject" Reject
-              a.btn.success.game-hit href="/hit/#{hit.id}/bonus" Give Bonus
+              a.btn.success.game-hit href="/hits/#{hit.id}/approve" Approve
+              a.btn.warning.game-hit href="/hits/#{hit.id}/reject" Reject
+              a.btn.success.game-hit href="/hits/#{hit.id}/bonus" Give Bonus
                   
 #non_mturk_approve_game
-  - @game.gameusers.all(:mturk=>false).each do |gu|
+  - @gameusers.each do |gu|
     .non_mturk_user.vm
-      .non_mturk_user_name== gu.user.get_name
-      .earnings== display_decimal(2,gu.final_score * @game.exchange_rate)
+      .non_mturk_user_name== gu.user.try(:get_name)
+      .earnings== number_to_currency(gu.final_score * @game.exchange_rate)
       .state==gu.state
-      - if gu.state!=:approved
-        a.btn href="/gameuser/#{gu.id}/pay" Pay
+      - unless gu.approved?
+        = link_to "Pay", pay_game_user_path(@game, gu), :class => 'btn'
       - else
         span Paid!

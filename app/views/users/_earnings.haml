@@ -1,0 +1,13 @@
+%h3 Earnings
+#paid_earning
+  %span Paid earnings:
+  %span= number_to_currency(user.paid_balance)
+#unpaid_earning
+  %span Unpaid earnings:
+  %span= number_to_currency(user.unpaid_balance)
+#rejected_earning
+  %span Rejected earnings:
+  %span= number_to_currency(user.rejected_balance)
+#total_earning
+  %span Total earnings:
+  %span= number_to_currency(user.total_earned)

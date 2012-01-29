@@ -1,0 +1,9 @@
+#created_games
+  %h2 List of created games
+  #list_games
+    - current_user.games.each do |g|
+      .game.vm
+        %span= "Game ##{g.id}"
+        = link_to 'Dashboard', dashboard_game_path(g)
+        = link_to 'Summary', summary_game_path(g)
+        %span= "created #{time_ago_in_words(g.created_at)}"

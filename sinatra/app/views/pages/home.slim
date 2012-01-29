@@ -1,5 +1,4 @@
 = content_for :javascripts do
-  == js :jquery_ui
   == js :json
   == js "/app/home.js"
 = content_for :stylesheets do
@@ -9,7 +8,7 @@
   .row
     ul.breadcrumb#breadcrumb_top
       li
-        a href="/game/delete_all" Reset
+        a href="/games/delete_all" Reset
       - if is_researcher
         li
           a href="/game/create" Create a Game
@@ -30,12 +29,12 @@
               | created by 
               a href="/user/#{g.user.id}"== g.user.get_name
             .game-top-title.vm
-              /a.game-delete href="/game/#{g.id}/delete" Delete game
-              a.game-log href="/game/#{g.id}/dashboard" Game dashboard
+              /a.game-delete href="/games/#{g.id}/delete" Delete game
+              a.game-log href="/games/#{g.id}/dashboard" Game dashboard
               - if g.state=='game_ended'
-                a href="/game/#{g.id}/summary" Summary
+                a href="/games/#{g.id}/summary" Summary
               - else
-                a.game-join href="/game/#{g.id}" Join this game
+                a.game-join href="/games/#{g.id}" Join this game
             h4.game-title==g.title
             p.game-description.descriptor==g.description
             - if g.state
@@ -51,7 +50,7 @@
                 h4 Participants
                 - g.gameusers.each do |gu|
                   .game-participant.vm
-                    a href="/user/#{gu.user.id}" User #{gu.user.id}
+                    a href="/users/#{gu.user.id}" User #{gu.user.id}
                     .game-participant-state==gu.state
       - else
         span No games yet.

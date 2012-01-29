@@ -58,7 +58,7 @@
         id: this.last_id
       };
       if (this.game_id) data.game_id = this.game_id;
-      return $.getJSON("/game/events", data, function(o) {
+      return $.getJSON("/games/events", data, function(o) {
         var log, _i, _len;
         for (_i = 0, _len = o.length; _i < _len; _i++) {
           log = o[_i];

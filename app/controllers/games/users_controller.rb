@@ -32,9 +32,9 @@ class Games::UsersController < ApplicationController
 
   def pay
     gu = @game.gameusers.find(params[:id])
-    gu.approve!
+    gu.approve
     
-    redirect_to root_path, :notice => "You paid #{gu.user.get_name}!"
+    redirect_to [:summary, @game], :notice => "You paid #{gu.user.try(:get_name)}!"
   end
 
   private

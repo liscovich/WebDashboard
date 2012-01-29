@@ -41,7 +41,7 @@ class game_state_tracker
     data = {id: @last_id}
     data.game_id = @game_id if @game_id
       
-    $.getJSON "/game/events", data, (o)=>
+    $.getJSON "/events", data, (o)=>
       for log in o
         @process(log)
       

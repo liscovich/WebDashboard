@@ -1,7 +1,6 @@
 = content_for :javascripts do
-  == js :jquery_ui
   == js :json
-  == js "/app/home.js"
+  == js "app/home.js"
 #gamecreate_container
   .row
     .span8
@@ -61,7 +60,7 @@
           - @games.each do |g|
             .game_template_one.vm
               span Game #{g.id}
-              span created #{timeago(g.created_at,2)}
+              span created #{time_ago_in_words(g.created_at)}
               a.game-template href="/games/#{g.id}/template" Use as template
         - else
           span No games yet

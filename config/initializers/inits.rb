@@ -18,7 +18,6 @@ WINDOWS_SERVER_IP = "#{WINDOWS_IP}:4567"
 TARGET_SERVER_IP = "50.57.187.207"
 
 JS = {
-  :jquery     => "https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js",
   :jquery_ui  => 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js',
   :json       => 'http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js',
   :spine      => 'http://cdnjs.cloudflare.com/ajax/libs/spinejs/0.0.4/spine.min.js',

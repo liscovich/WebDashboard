@@ -28,7 +28,7 @@
     };
     Route.add = function(path, callback) {
       var key, value, _results;
-      if (typeof path === "object") {
+      if (typeof path === "object" && !(path instanceof RegExp)) {
         _results = [];
         for (key in path) {
           value = path[key];
@@ -36,7 +36,7 @@
         }
         return _results;
       } else {
-        return this.routes.unshift(new this(path, callback));
+        return this.routes.push(new this(path, callback));
       }
     };
     Route.setup = function(options) {

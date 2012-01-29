@@ -1,6 +1,0 @@
-ul.breadcrumb
-  li class=(if sel=='profile' then 'active' else '' end)
-    a href="/user/#{@user.id}" Profile
-  - if is_me?(@user)
-    li class=(if sel=='edit' then 'active' else '' end)
-      a href="/user/#{@user.id}/edit"  Edit

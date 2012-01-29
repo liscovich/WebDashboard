@@ -2,7 +2,7 @@ class GamesController < ApplicationController
   respond_to :json, :only => [:template, :state]
 
   before_filter :researcher_required, :only   => [:new, :create, :dashboard]
-  before_filter :find_game,           :except => [:delete_all, :frame]
+  before_filter :find_game,           :except => [:new, :delete_all, :frame]
 
   def delete_all
     Game.destroy_all
@@ -21,14 +21,13 @@ class GamesController < ApplicationController
   #TODO recheck
   def mturk
     #unless is_logged_in?
-    am = Authmethod.mturk.first(:auth_id=>params[:workerId])
-    p am.inspect
-    if am.nil?
-      u = User.create_user_with_provider('mturk', params[:workerId])
-
-      u.sign_in!(session)
-    else
+    if am = Authmethod.mturk.where(:auth_id=>params[:workerId]).first
+      p am.inspect
       am.user.sign_in!(session)
+#      sign_in(u)
+    else
+      u = User.create_user_with_provider('mturk', params[:workerId])
+      sign_in(u)
     end
     #end
 
@@ -70,9 +69,7 @@ class GamesController < ApplicationController
 
   def create
     #TODO refactor!!
-    @game = Game.new
-    @game.user_id = session[:id]
-    @game.created_at = Time.now
+    @game = current_user.games.build
     @game.title = params[:title]
     @game.description = params[:description]
     @game.contprob = params[:cont_prob]
@@ -85,7 +82,7 @@ class GamesController < ApplicationController
     @game.humanplayers = params[:human_subjects]
     @game.exchange_rate = params[:exchange_rate]
 
-    unless @gameg.save
+    unless @game.save
       render :new and return
     end
 
@@ -110,7 +107,7 @@ class GamesController < ApplicationController
     #end
 
     @game.humanplayers.times do
-
+      #TODO refactor
       hitt = RTurk::Hit.create(:title => "Come play a card game!") do |hit|
         hit.hit_type_id = HIT_TYPE.type_id
         hit.assignments = 1
@@ -125,7 +122,7 @@ class GamesController < ApplicationController
       h = Hit.new
       h.hitid = hitt.id
       h.url = hitt.url
-      h.game_id = g.id
+      h.game_id = @game.id
       h.sandbox = RTurk.sandbox?
       h.save
     end
@@ -161,20 +158,21 @@ class GamesController < ApplicationController
 
   def summary
     @hero_unit_title = "Game #{params[:id]} Summary"
+    @gameusers = @game.gameusers(:mturk => false)
   end
 
   def template
     data = {
       :title => @game.title,
-      :description=> @game.description,
-      :cont_prob=> display_decimal(2,@game.contprob),
-      :init_endow=> @game.init_endow,
+      :description => @game.description,
+      :cont_prob => helpers.number_to_currency(@game.contprob),
+      :init_endow => @game.init_endow,
       :cost_def => @game.cost_defect,
       :cost_coop => @game.cost_coop,
-      :ind_pay_shares=> display_decimal(2,@game.ind_payoff_shares),
-      :exch_rate=> display_decimal(3,@game.exchange_rate),
-      :tot_sub=> @game.totalplayers,
-      :hum_sub=> @game.humanplayers
+      :ind_pay_shares => helpers.number_to_currency(@game.ind_payoff_shares, :precision => 3),
+      :exch_rate => helpers.number_to_currency(@game.exchange_rate),
+      :tot_sub => @game.totalplayers,
+      :hum_sub => @game.humanplayers
     }
 
     respond_with(data)

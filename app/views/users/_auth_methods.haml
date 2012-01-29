@@ -1,0 +1,19 @@
+%h3 Linked accounts
+- user.authentications.each do |a|
+  .auth_method.vm{:class => "img-#{a.provider}-lt"}
+    .auth_method_type= a.provider
+    .auth_method_id= a.uid
+  /= image_tag "#{a.provider}_32.png", :size => "32x32"
+  /= link_to "X", a, :confirm => 'Are you sure you want to remove this authentication option?', :method => :delete, :class => "remove"
+- unless user.authmethods_left.empty?
+  #add_authmethod
+    - if user.authmethods_left.include? 'facebook'
+      #add_facebook_auth= link_to 'Add your facebook account!', authentications_path, :class => 'img-facebook-lt'
+    - if user.authmethods_left.include? 'mturk'
+      #add_mturk_auth
+        = form_for :mturk, :url => authentications_path do |f|
+          %p
+            = f.label :mturk_id, 'MTurk ID'
+            .input= f.text_field :mturk_id
+          %p
+            .input= f.submit 'Link MTurk'
