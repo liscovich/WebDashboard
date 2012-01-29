@@ -1,0 +1,13 @@
+%h1= current_user.username || "User ##{@user.id}"
+= render "nav", :sel => 'edit'
+
+#user_editing
+  #change_password
+    = render 'edit_password', :user => @user
+
+  #edit_personal_info
+    %h4 Edit profile
+    - if current_user.researcher?
+      = render 'edit_researcher', :user => @user
+    - else
+      = render 'edit_player', :user => @user

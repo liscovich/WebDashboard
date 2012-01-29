@@ -1,0 +1,20 @@
+= form_for user, :html => { :method => :put } do |f|
+  %p
+    %label Age
+    .input
+      = f.text_field :age
+  %p
+    %label Location
+    .input
+      = f.text_field :location
+  %p
+    %label Gender
+    .input
+      = f.select :gender, User::GENDERS
+  %p
+    %label Bio
+    .input
+      = f.text_area :bio
+  %p
+    .input
+      = f.submit 'Change personal info', :class => 'btn success'

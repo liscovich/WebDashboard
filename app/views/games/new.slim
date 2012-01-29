@@ -5,7 +5,7 @@
   .row
     .span8
       h2 Parameters
-      form.form_small method='post' action='/games'
+      = form_tag '/games', :class => 'form_small' do
         fieldset
           .clearfix
             label Title

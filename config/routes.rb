@@ -1,5 +1,5 @@
 WebDashboard::Application.routes.draw do
-  devise_for :user, :controllers => {:registrations => 'registrations'}
+  devise_for :users, :controllers => {:registrations => 'registrations'}
 
   resources :logs, :only => [:index] do
     collection do
@@ -30,6 +30,7 @@ WebDashboard::Application.routes.draw do
     collection do
       get :delete_all
       get :frame #TODO move to members?
+      get :thanks
     end
     member do
       get :mturk
@@ -49,12 +50,11 @@ WebDashboard::Application.routes.draw do
     end
   end
   
-  resource :user do
+  resources :users do
     member do
-      post :complete
-      post :info
+#      post :info
       post :researcher
-      post :password
+      put  :update_password
     end
   end
 

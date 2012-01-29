@@ -25,20 +25,20 @@
   .well
     h2 Status:
     h3.paddingleft#game_state==@game.state_name
-  - if params[:workerId]
+  - if session[:current_game]
     .well
       h2 Task Info:
       .vm.smaller
         div WorkerId
-        span==params[:workerId]
+        span== session[:current_game][:worker_id]
       .vm.smaller
         div AId
-        span.small==params[:assignmentId]
+        span.small== session[:current_game][:assignment_id]
   #submit_row.well.margintop class=(@game.state=='game_ended' ? '' : 'hide')
     - if @hit
       - assignment = @hit.assignments.first
       - if !assignment
-        a.btn.success.large#submit_mturk target="mturkresult" href="#{MTURK_SUBMIT_URL}?assignmentId=#{params[:assignmentId]}&workerId=#{params[:workerId]}&hitId=#{params[:hitId]}&redirect_url=#{root_url+'/game/thanks'}" Submit HIT
+        a.btn.success.large#submit_mturk target="mturkresult" href="#{MTURK_SUBMIT_URL}?assignmentId=#{session[:current_game][:assignment_id]}&workerId=#{session[:current_game][:worker_id]}&hitId=#{session[:current_game][:hit_id]}&redirect_url=#{thanks_games_url}" Submit HIT
         iframe.hide name='mturkresult'
     - else
       a.btn.success.large#submit_non_mturk href="/gameuser/record_submission" Submit for $

@@ -1,5 +1,7 @@
 class Authentication < ActiveRecord::Base
-  METHODS = {:fb => 'facebook', :mturk => 'mturk'}
+  METHODS = {:fb => 'facebook', :mturk => 'mturk', :open_id => 'open_id'}
+
+  scope :mturk, where(:provider => METHODS[:mturk])
 
   belongs_to :user
 

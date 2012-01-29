@@ -12,3 +12,8 @@
  *= require partials/_base
  *= require_tree .
 */
+
+#main {
+  position: absolute;
+  top: 60px;
+}

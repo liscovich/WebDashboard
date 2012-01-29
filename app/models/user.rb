@@ -3,9 +3,9 @@ class User < ActiveRecord::Base
   GENDERS = %W(male female)
   
   # Include default devise modules. Others available are: https://github.com/plataformatec/devise
-  devise :database_authenticatable, :registerable, :rememberable, :validatable
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :role, :username, :gender
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :role, :username, :gender, :location, :institution, :telephone
 
   validates :role,   :presence => true, :inclusion => ROLES
   validates :gender, :presence => true, :inclusion => GENDERS
@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
   end
 
   def apply_mturk(mturk_hash)
-    authentications.build(:provider => Authentication::METHODS[:mturk], :uid => mturk_hash[:mturk_id])
+    authentications.mturk.build(:uid => mturk_hash[:mturk_id])
   end
 
   def password_required?

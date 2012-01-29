@@ -1,8 +1,8 @@
 class GamesController < ApplicationController
   respond_to :json, :only => [:template, :state]
 
-  before_filter :researcher_required, :only   => [:new, :create, :dashboard]
-  before_filter :find_game,           :except => [:new, :delete_all, :frame]
+  before_filter :researcher_required, :only   => [:mturk, :new, :create, :dashboard]
+  before_filter :find_game,           :except => [:new, :create, :delete_all, :frame]
 
   def delete_all
     Game.destroy_all
@@ -18,18 +18,14 @@ class GamesController < ApplicationController
     render :layout => false
   end
 
-  #TODO recheck
+  #callback from amazon
   def mturk
-    #unless is_logged_in?
-    if am = Authmethod.mturk.where(:auth_id=>params[:workerId]).first
-      p am.inspect
-      am.user.sign_in!(session)
-#      sign_in(u)
-    else
-      u = User.create_user_with_provider('mturk', params[:workerId])
-      sign_in(u)
+    unless current_user.authentications.mturk.exists?(:uid => params[:workerId])
+      current_user.apply_mturk(:mturk_id => params[:workerId])
     end
-    #end
+
+    # vars for game
+    session[:current_game] = {:worker_id => params[:workerId], :hit_id => params[:hitId], :assignment_id => params[:assignmentId]}
 
     redirect_to @game
   end
@@ -43,9 +39,8 @@ class GamesController < ApplicationController
   end
 
   def show
-    unless logged_in?
-      flash[:error] = "You need to be logged in or coming from Amazon in order to play!"
-      deny!
+    unless signed_in?
+      redirect_to new_user_session_path, :error => "You need to be logged in or coming from Amazon in order to play!"
     end
 
     @hide_header = true
@@ -53,13 +48,6 @@ class GamesController < ApplicationController
     @hide_navigation = true
 
     @hit = RTurk::Hit.find(params[:hitId]) if params[:hitId]
-
-    @hiddens = {
-      :userid => session[:id],
-      :gameid => @game.id,
-      :isamazon => (params[:workerId].nil? ? 0 : 1),
-      :webplayer => "http://#{WINDOWS_SERVER_IP}/instance/#{@game.id}.unity3d"
-    }
   end
 
   def new
@@ -95,6 +83,7 @@ class GamesController < ApplicationController
 
     if res.code!="200"
       @game.destroy
+      p res.body
       return res.body
       #flash_back "Cannot not start up master client!"
     end
@@ -112,7 +101,7 @@ class GamesController < ApplicationController
         hit.hit_type_id = HIT_TYPE.type_id
         hit.assignments = 1
         hit.description = "More card games!"
-        hit.question("http://card.demo.s3.amazonaws.com/frame.html?redirect_url=#{redirect_url}" , :frame_height => 1000)
+        hit.question("http://card.demo.s3.amazonaws.com/frame.html?redirect_url=#{redirect_url}", :frame_height => 1000)
         hit.keywords = 'card, game, economics'
         hit.reward = 0.01
         hit.lifetime = 240
@@ -129,7 +118,7 @@ class GamesController < ApplicationController
 
     @game.save!
     
-    redirect_to [@game, :dashboard], :notice => "You created a game!"
+    redirect_to [:dashboard, @game], :notice => "You created a game!"
   end
 
   def destroy

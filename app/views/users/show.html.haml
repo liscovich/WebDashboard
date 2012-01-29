@@ -1,8 +1,8 @@
 #profile_container
-  a href='/' Back to list of users
+  = link_to 'Back to list of users', root_url
   .row
     .span8
-      h1 #{current_user.username || "User ##{current_user.id}"} (#{current_user.role.camelize})
+      %h1 #{current_user.username || "User ##{current_user.id}"} (#{current_user.role.camelize})
       = render 'nav', :sel=>'profile'
       #profile
         = render 'profile', :user => current_user
@@ -15,4 +15,3 @@
       = render 'created_games', :user => current_user if current_user.researcher?
       #games
         = render 'games', :user => current_user
-        
