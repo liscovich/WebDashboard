@@ -1,6 +1,6 @@
-= content_for :javascripts do
-  == js :unity3d
-  == js "/app/webclient.js"
+= content_for :head do
+  = js :unity3d
+  = js "app/webclient.js"
   javascript:
     function GetUnity() {
       if (typeof unityObject != "undefined") {

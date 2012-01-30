@@ -1,6 +1,7 @@
-= content_for :javascripts do
-  == js :json
-  == js "app/home.js"
+= content_for :head do
+  = js :json
+  = js "app/home.js"
+
 #gamecreate_container
   .row
     .span8
@@ -61,6 +62,6 @@
             .game_template_one.vm
               span Game #{g.id}
               span created #{time_ago_in_words(g.created_at)}
-              a.game-template href="/games/#{g.id}/template" Use as template
+              = link_to 'Use as template', [:template, g], :class => 'game-template'
         - else
           span No games yet
