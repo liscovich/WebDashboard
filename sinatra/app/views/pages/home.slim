@@ -22,12 +22,12 @@
           .game
             h3.game-id Game ##{g.id}
             h3.game-created
-              span== format_time(g.created_at)
+              span= g.created_at.to_s(:long)
               span &nbsp;|&nbsp;
-              span.small  #{timeago(g.created_at,2)} ago
+              span.small  #{time_ago_in_words(g.created_at)}
             .game-created-by 
-              | created by 
-              a href="/user/#{g.user.id}"== g.user.get_name
+              | created by
+              = link_to g.user.get_name, g.user
             .game-top-title.vm
               /a.game-delete href="/games/#{g.id}/delete" Delete game
               a.game-log href="/games/#{g.id}/dashboard" Game dashboard

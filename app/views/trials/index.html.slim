@@ -1,4 +1,4 @@
-= content_for :additional_scripts do
+= content_for :head do
   script src="http://code.jquery.com/jquery-1.5.2.min.js"
   script src="http://autobahn.tablesorter.com/jquery.tablesorter.min.js"
   javascript:
@@ -22,11 +22,11 @@ p
     tbody
       - @games.each do |g|
         tr
-          td==g.id
+          td= g.id
           td Public Goods Game
           td T#{g.id}
-          td==format_time(g.created_at)
-          td==g.state_name
+          td= g.created_at.to_s(:long)
+          td= g.state_name
           td
             ul
               - g.hits.each do |h|
@@ -36,9 +36,9 @@ p
             p
               - if current_user.researcher?
                 - if g.state!='game_ended'
-                  a.btn.primary href="/games/#{g.id}/dashboard" View
+                  = link_to 'View', [:dashboard, g], :class => 'btn primary'
                 - else
-                  a.btn.primary href="/games/#{g.id}/summary" Summary
+                  = link_to 'Summary', [:summary, g], :class => 'btn primary'
               - else
                 - if g.state!='game_ended'
-                  a.btn.primary href="/game/#{g.id}" Join
+                  = link_to 'Join', g, :class => 'btn primary'

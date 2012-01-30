@@ -1,55 +1,15 @@
 module ApplicationHelper
   def fetch_gameuser_by_hit_and_worker(hit_id, worker_id)
     hit  = Hit.where(:hitid=> hit_id).first
-    am   = Authentication.where(:uid => worker_id, :provider => 'mturk').first
+    am   = Authentication.mturk.where(:uid => worker_id).first
     return nil if am.nil? or hit.nil?
 
-    Gameuser.where(:game_id=>hit.game_id, :user_id=>am.user_id).first
-  end
-
-  def difftime(diff,resolution=1)
-    res = { :year => 24*60*60*30*365,
-      :month  => 24*60*60*30,
-      :day    => 24*60*60,
-      :hour   => 60*60,
-      :minute => 60,
-      :second => 1}
-
-    count = 0
-    str   = ''
-    res.each do |name,thres|
-      if(diff>=thres)
-        val = (diff/thres).floor
-        if(count>0)
-          str+=" "
-        end
-        str+="#{val} #{name}"
-        if(val>1)
-          str+="s"
-        end
-        diff-=val*thres
-        count+=1
-      end
-      if count>=resolution
-        break
-      end
-    end
-    if(str.length==0)
-      str="1 second"
-    end
-    str.strip
+    hit.gameusers.where(:user_id=>am.user_id).first
   end
 
   def format_time(time)
     t = Time.parse(time.to_s)
     t.strftime("%Y-%m-%d %H:%M:%S")
-  end
-
-  def random(len)
-    chars = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a
-    newpass = ""
-    1.upto(len) { |i| newpass << chars[rand(chars.size-1)] }
-    newpass
   end
 
   #TODO recheck

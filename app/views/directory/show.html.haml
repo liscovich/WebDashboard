@@ -1,0 +1,8 @@
+#all_users
+  %h3 All users
+  - User.all.each do |u|
+    .all_user.vm
+      = link_to(u.username || "User ##{u.id}", u), :class => 'all_user-username'
+      .role= u.role
+      .created_at= created #{time_ago_in_words(u.created_at)}
+      .games-played played #{u.gameusers.size} games
