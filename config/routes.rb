@@ -1,4 +1,8 @@
 WebDashboard::Application.routes.draw do
+  namespace :admin do
+    
+  end
+
   devise_for :users, :controllers => {:omniauth_callbacks => 'authentications', :registrations => 'registrations'}
 
   resources :logs, :only => [:index] do

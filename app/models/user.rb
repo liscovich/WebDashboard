@@ -35,6 +35,10 @@ class User < ActiveRecord::Base
   def email_required?
     authentications.blank?
   end
+
+  def update_tracked_fields!(request)
+    super(request) unless admin?
+  end
   
   def get_name
     self.username || "User #{self.id}"
