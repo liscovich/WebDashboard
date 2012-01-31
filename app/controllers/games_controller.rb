@@ -5,9 +5,9 @@ class GamesController < ApplicationController
   before_filter :find_game,           :except => [:new, :create, :delete_all, :frame]
 
   def delete_all
-    Game.destroy_all
-    Gameuser.destroy_all
-    Event.destroy_all
+    Game.transaction do
+      [Game, Gameuser, Event].each &:destroy_all
+    end
     uri = URI("http://#{WINDOWS_SERVER_IP}/instance/delete_all")
     res = Net::HTTP.get(uri)
 
@@ -56,66 +56,22 @@ class GamesController < ApplicationController
   end
 
   def create
-    #TODO refactor!!
-    @game = current_user.games.build
-    @game.title = params[:title]
-    @game.description = params[:description]
-    @game.contprob = params[:cont_prob]
-    @game.cost_defect = params[:cost_defect]
-    @game.cost_coop = params[:cost_coop]
     p params[:ind_payoff_shares].to_f
-    @game.ind_payoff_shares = params[:ind_payoff_shares].to_f
-    @game.init_endow = params[:init_endow]
-    @game.totalplayers = params[:total_subjects]
-    @game.humanplayers = params[:human_subjects]
-    @game.exchange_rate = params[:exchange_rate]
+    
+    #TODO refactor!!
+    @game = current_user.games.build(
+      :title => params[:title], :description => params[:description], :contprob => params[:cont_prob],
+      :cost_defect => params[:cost_defect], :cost_coop => params[:cost_coop],
+      :ind_payoff_shares => params[:ind_payoff_shares].to_f, :init_endow => params[:init_endow],
+      :totalplayers  => params[:total_subjects], :humanplayers => params[:human_subjects],
+      :exchange_rate => params[:exchange_rate]
+    )
 
     unless @game.save
       render :new and return
     end
 
-    redirect_url = URI::escape(url_for([:mturk, @game]))
-
-    uri = URI("http://#{WINDOWS_SERVER_IP}/new")
-    param = "-session=#{@game.id} -server=#{WINDOWS_IP}:#{WINDOWS_PHOTON_PORT} -totalPlayers=#{params[:total_subjects]} -humanPlayers=#{params[:human_subjects]} -probability=#{@game.contprob} -initialEndowments=#{@game.init_endow} -payout=#{@game.ind_payoff_shares} -cardLowValue=#{@game.cost_defect} -cardHighValue=#{@game.cost_coop} -exchangeRate=#{@game.exchange_rate} -batchmode"
-
-    res = Net::HTTP.post_form(uri, 'id'=>@game.id, 'instance'=>'test', 'args'=>param)
-
-    if res.code!="200"
-      @game.destroy
-      p res.body
-      return res.body
-      #flash_back "Cannot not start up master client!"
-    end
-
-    #uri = URI("http://#{WINDOWS_SERVER_IP}/instance/#{g.id}.unity3d")
-    #res = Net::HTTP.get(uri)
-
-    #File.open(ROOT+"/../public/flash/webplayer.unity3d", "wb") do |file|
-    #  file.write(res)
-    #end
-
-    @game.humanplayers.times do
-      #TODO refactor
-      hitt = RTurk::Hit.create(:title => "Come play a card game!") do |hit|
-        hit.hit_type_id = HIT_TYPE.type_id
-        hit.assignments = 1
-        hit.description = "More card games!"
-        hit.question("http://card.demo.s3.amazonaws.com/frame.html?redirect_url=#{redirect_url}", :frame_height => 1000)
-        hit.keywords = 'card, game, economics'
-        hit.reward = 0.01
-        hit.lifetime = 240
-        hit.duration = 240
-      end
-
-      h = Hit.new
-      h.hitid = hitt.id
-      h.url = hitt.url
-      h.game_id = @game.id
-      h.sandbox = RTurk.sandbox?
-      h.save
-    end
-
+    @game.post_mturk!(URI::escape(url_for([:mturk, @game])))
     @game.save!
     
     redirect_to [:dashboard, @game], :notice => "You created a game!"
