@@ -35,10 +35,10 @@ p
           td
             p
               - if current_user.researcher?
-                - if g.state!='game_ended'
+                - unless g.ended?
                   = link_to 'View', [:dashboard, g], :class => 'btn primary'
                 - else
                   = link_to 'Summary', [:summary, g], :class => 'btn primary'
               - else
-                - if g.state!='game_ended'
+                - unless g.ended?
                   = link_to 'Join', g, :class => 'btn primary'

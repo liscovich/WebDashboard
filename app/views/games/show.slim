@@ -34,11 +34,11 @@
       .vm.smaller
         div AId
         span.small== session[:current_game][:assignment_id]
-  #submit_row.well.margintop class=(@game.state=='game_ended' ? '' : 'hide')
+  #submit_row.well.margintop class=(@game.ended? ? '' : 'hide')
     - if @hit
       - assignment = @hit.assignments.first
       - if !assignment
-        a.btn.success.large#submit_mturk target="mturkresult" href="#{MTURK_SUBMIT_URL}?assignmentId=#{session[:current_game][:assignment_id]}&workerId=#{session[:current_game][:worker_id]}&hitId=#{session[:current_game][:hit_id]}&redirect_url=#{thanks_games_url}" Submit HIT
+        a.btn.success.large#submit_mturk target="mturkresult" href=(mturk_submit_url(session[:current_game])) Submit HIT
         iframe.hide name='mturkresult'
     - else
       a.btn.success.large#submit_non_mturk href="/gameuser/record_submission" Submit for $

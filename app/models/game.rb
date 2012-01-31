@@ -13,12 +13,16 @@ class Game < ActiveRecord::Base
         'initialized' => 'Waiting for server...',
         'masterclient_started' => 'Waiting for players',
         'game_started' => 'Game in progress',
-        'game_ended' => 'Game over',
+        'game_ended'   => 'Game over',
       }[state]
     end
   end
 
   def state_name
     self.class.get_state_name(self.state)
+  end
+
+  def ended?
+    state == 'game_ended'
   end
 end
