@@ -1,5 +1,5 @@
 WebDashboard::Application.routes.draw do
-  devise_for :users, :controllers => {:registrations => 'registrations'}
+  devise_for :users, :controllers => {:omniauth_callbacks => 'authentications', :registrations => 'registrations'}
 
   resources :logs, :only => [:index] do
     collection do

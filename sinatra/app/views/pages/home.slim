@@ -9,9 +9,9 @@
     ul.breadcrumb#breadcrumb_top
       li
         a href="/games/delete_all" Reset
-      - if is_researcher
+      - if current_user.researcher?
         li
-          a href="/game/create" Create a Game
+          = link_to 'Create a Game', new_game_path
         li
           a href="/directory" Directory of users
   .row  

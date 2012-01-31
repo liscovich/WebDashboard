@@ -15,8 +15,9 @@ class AuthenticationsController < ApplicationController
       flash[:notice] = "Authentication successful."
       redirect_to authentications_url
     else
-      user = User.new
+      user = User.researcher.male.new
       params[:mturk] ? user.apply_mturk(params[:mturk]) : user.apply_omniauth(omniauth)
+      
       user.save!
       flash[:notice] = "Signed in successfully."
       sign_in_and_redirect(:user, user)

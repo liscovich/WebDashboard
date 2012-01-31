@@ -31,7 +31,7 @@ gem 'devise'
 
 gem 'omniauth'
 gem "omniauth-twitter"
-#gem 'omniauth-facebook'
+gem 'omniauth-facebook'
 #gem 'openid'
 #gem 'omniauth-openid'
 

@@ -7,15 +7,20 @@ class User < ActiveRecord::Base
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :role, :username, :gender, :location, :institution, :telephone
 
-  validates :role,   :presence => true, :inclusion => ROLES
-  validates :gender, :presence => true, :inclusion => GENDERS
+  validates :role,   :presence => true, :inclusion => ROLES,   :if => lambda{|u| u.authentications.blank? }
+  validates :gender, :presence => true, :inclusion => GENDERS, :if => lambda{|u| u.authentications.blank? }
 
   has_many :authentications
   has_many :gameusers
   has_many :games
 
+  scope :player,     where(:role   => 'player')
+  scope :researcher, where(:role   => 'researcher')
+  scope :male,       where(:gender => 'male')
+  scope :female,     where(:gender => 'female')
+
   def apply_omniauth(omniauth)
-    self.email = omniauth['user_info']['email'] if email.blank?
+    self.email = omniauth['user_info']['email'] if email.blank? and omniauth['user_info']
     authentications.build(:provider => omniauth['provider'], :uid => omniauth['uid'])
   end
 
@@ -25,6 +30,10 @@ class User < ActiveRecord::Base
 
   def password_required?
     (authentications.empty? || !password.blank?) && super
+  end
+
+  def email_required?
+    authentications.blank?
   end
   
   def get_name

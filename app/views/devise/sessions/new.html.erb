@@ -1,0 +1,19 @@
+<% title "Sign In Options" %>
+
+<div class="row">
+  <div class="span8">
+    <h3>Sign up</h3>
+
+    <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
+      <%= render 'registrations/form', :f => f %>
+
+      <div><%= f.submit "Sign up" %></div>
+    <% end %>
+  </div>
+
+  <div class="span8">
+    <%= render 'login_form' %>
+    <%= render 'omniauth_form' %>
+  </div>
+</div>
+<div class="clear"></div>
