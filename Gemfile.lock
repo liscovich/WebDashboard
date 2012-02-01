@@ -87,7 +87,7 @@ GEM
       gem_plugin (~> 0.2.3)
     multi_json (1.0.4)
     multipart-post (1.1.4)
-    mysql2 (0.3.11)
+    mysql2 (0.2.18)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
     net-sftp (2.0.5)
@@ -198,7 +198,7 @@ DEPENDENCIES
   haml
   jquery-rails
   mongrel (>= 1.2.0.pre2)
-  mysql2
+  mysql2 (< 0.3)
   omniauth
   omniauth-facebook
   omniauth-twitter
