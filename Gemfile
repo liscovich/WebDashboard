@@ -38,14 +38,14 @@ gem 'omniauth-facebook'
 group :development do
   gem "mongrel", '>= 1.2.0.pre2'
   gem 'rspec-rails'
-#  gem 'capistrano'
-#  gem 'capistrano_colors'
+  gem 'capistrano'
+  gem 'capistrano_colors'
   # To use debugger
 #  gem 'ruby-debug19', :require => 'ruby-debug'
 end
 
 group :production do
-  gem 'unicorn'
+#  gem 'unicorn'
 end
 
 # To use ActiveModel has_secure_password
