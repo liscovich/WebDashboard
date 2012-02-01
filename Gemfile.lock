@@ -198,7 +198,7 @@ DEPENDENCIES
   haml
   jquery-rails
   mongrel (>= 1.2.0.pre2)
-  mysql2 (< 0.3)
+  mysql2
   omniauth
   omniauth-facebook
   omniauth-twitter
