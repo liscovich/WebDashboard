@@ -9,7 +9,7 @@ $ ->
     window.gst.fetch_state()
   , 2000
 
-class game_state_tracker_dashboard extends game_state_tracker
+class game_state_tracker_dashboard extends window.game_state_tracker
   constructor: ->
     @players = {}
     super arguments...

@@ -35,10 +35,6 @@ class GamesController < ApplicationController
     respond_with([@game.state, @game.state_name])
   end
 
-  def listing
-    #TODO blank?
-  end
-
   def show
     unless signed_in?
       redirect_to new_user_session_path, :error => "You need to be logged in or coming from Amazon in order to play!"

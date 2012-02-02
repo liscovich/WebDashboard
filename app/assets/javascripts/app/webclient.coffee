@@ -29,7 +29,7 @@ $ ->
     false
 
 
-class game_state_tracker_webclient extends game_state_tracker
+class game_state_tracker_webclient extends window.game_state_tracker
   process: (obj)=>
     return if obj.event_type isnt 'gamestate_update'
     $('#game_state').text obj.state_name
