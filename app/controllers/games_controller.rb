@@ -11,7 +11,7 @@ class GamesController < ApplicationController
     uri = URI("http://#{WINDOWS_SERVER_IP}/instance/delete_all")
     res = Net::HTTP.get(uri)
 
-    redirect_to :games_path, :notice => "Deleted all games!"
+    redirect_to root_path, :notice => "Deleted all games!"
   end
 
   def frame
