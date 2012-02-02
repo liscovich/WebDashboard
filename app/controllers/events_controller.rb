@@ -1,5 +1,5 @@
 class EventsController < ApplicationController
-  respond_to :json, :only => :events
+  respond_to :json, :only => :index
 
 #  before_filter :find_game
 
