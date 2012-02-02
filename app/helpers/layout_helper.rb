@@ -15,4 +15,12 @@ module LayoutHelper
   def javascript(*args)
     content_for(:head) { javascript_include_tag(*args) }
   end
+
+  def head(&block)
+    content_for(:head, &block)
+  end
+
+  def sidebar(&block)
+    content_for(:sidebar, &block)
+  end
 end

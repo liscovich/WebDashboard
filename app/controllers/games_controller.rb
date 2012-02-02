@@ -4,6 +4,8 @@ class GamesController < ApplicationController
   before_filter :researcher_required, :only   => [:mturk, :new, :create, :dashboard]
   before_filter :find_game,           :except => [:new, :create, :delete_all, :frame]
 
+  helper_method :web_player_url
+
   def delete_all
     Game.transaction do
       [Game, Gameuser, Event].each &:destroy_all
@@ -49,11 +51,13 @@ class GamesController < ApplicationController
 
     @hit = RTurk::Hit.find(params[:hitId]) if params[:hitId]
 
+    @current_game = session[:current_game]
+
     @hiddens = {
-      :userid    => curret_user.id,
+      :userid    => current_user.id,
       :gameid    => @game.id,
-      :isamazon  => (session[:current_game] and session[:current_game][:worker_id] ? 1 : 0),
-      :webplayer => "http://#{WINDOWS_SERVER_IP}/instance/#{@game.id}.unity3d"
+      :isamazon  => (@current_game and @current_game[:worker_id] ? 1 : 0),
+      :webplayer => web_player_url
     }
   end
 
@@ -139,5 +143,11 @@ class GamesController < ApplicationController
   def find_game
     @game = Game.find(params[:id])
     redirect_to root_path, :error => "Cannot find game!" unless @game
+  end
+
+  def web_player_url
+    raise "game isn't assigned" unless @game
+    
+    "http://#{WINDOWS_SERVER_IP}/instance/#{@game.id}.unity3d"
   end
 end

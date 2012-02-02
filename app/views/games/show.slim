@@ -1,5 +1,5 @@
-= content_for :head do
-  = js :unity3d
+= head do
+  = js :unity3d_object
   = javascript_include_tag "app/webclient"
   javascript:
     function GetUnity() {
@@ -9,36 +9,36 @@
       return null;
     }
     if (typeof unityObject != "undefined") {
-      var webplayer_address = "http://#{WINDOWS_SERVER_IP}/instance/#{@game.id}.unity3d";
+      var webplayer_address = #{web_player_url.to_json.html_safe};
       unityObject.embedUnity("unityPlayer", webplayer_address, 640, 480);
       
     }
   javascript:
     function ProvideSessionData()
     {
-        var params = "#{@game.id}" + "|" + "#{WINDOWS_IP}" + "|" + "#{WINDOWS_PHOTON_PORT}" + "|" + "#{current_user.id}" + "|" + "false";
+        var params = #{params_for_unity(@game).to_json.html_safe};
         GetUnity().SendMessage("WebPageCommunicator","Initialize",params);
     }
 
 
-= content_for :sidebar do
+= sidebar do
   .well
     h2 Status:
     h3.paddingleft#game_state==@game.state_name
-  - if session[:current_game]
+  - if @current_game
     .well
       h2 Task Info:
       .vm.smaller
         div WorkerId
-        span== session[:current_game][:worker_id]
+        span== @current_game[:worker_id]
       .vm.smaller
         div AId
-        span.small== session[:current_game][:assignment_id]
+        span.small== @current_game[:assignment_id]
   #submit_row.well.margintop class=(@game.ended? ? '' : 'hide')
     - if @hit
       - assignment = @hit.assignments.first
       - if !assignment
-        a.btn.success.large#submit_mturk target="mturkresult" href=(mturk_submit_url(session[:current_game])) Submit HIT
+        a.btn.success.large#submit_mturk target="mturkresult" href=(mturk_submit_url(@current_game)) Submit HIT
         iframe.hide name='mturkresult'
     - else
       a.btn.success.large#submit_non_mturk href="/gameuser/record_submission" Submit for $
