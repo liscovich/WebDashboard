@@ -16,7 +16,7 @@
   javascript:
     function ProvideSessionData()
     {
-        var params = "#{@game.id}" + "|" + "#{WINDOWS_IP}" + "|" + "#{WINDOWS_PHOTON_PORT}" + "|" + "#{session[:id]}" + "|" + "false";
+        var params = "#{@game.id}" + "|" + "#{WINDOWS_IP}" + "|" + "#{WINDOWS_PHOTON_PORT}" + "|" + "#{current_user.id}" + "|" + "false";
         GetUnity().SendMessage("WebPageCommunicator","Initialize",params);
     }
 
