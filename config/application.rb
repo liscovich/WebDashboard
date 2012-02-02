@@ -56,6 +56,7 @@ module WebDashboard
 
     # Enable the asset pipeline
     config.assets.enabled = true
+    config.assets.precompile += %w(*.js *.css)
     config.sass.load_paths << Compass::Frameworks['compass'].stylesheets_directory
 
     # Version of your assets, change this if you want to expire all your assets
