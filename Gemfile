@@ -1,8 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.0'
-#gem "mongo_mapper"
-#gem 'bson_ext'
 gem 'mysql2'
 gem "haml"
 gem "jquery-rails"

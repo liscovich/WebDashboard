@@ -9,15 +9,15 @@
       return null;
     }
     if (typeof unityObject != "undefined") {
-      var webplayer_address = #{web_player_url.to_json.html_safe};
+      var webplayer_address = #{unity_player_url.to_json.html_safe};
       unityObject.embedUnity("unityPlayer", webplayer_address, 640, 480);
       
     }
   javascript:
     function ProvideSessionData()
     {
-        var params = #{params_for_unity(@game).to_json.html_safe};
-        GetUnity().SendMessage("WebPageCommunicator","Initialize",params);
+        var params = #{WindowsServer::params_for_unity(@game, current_user).to_json.html_safe};
+        GetUnity().SendMessage("WebPageCommunicator", "Initialize", params);
     }
 
 

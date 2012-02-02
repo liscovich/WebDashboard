@@ -11,12 +11,6 @@ HIT_TYPE = RTurk::RegisterHITType.create(:title => "Come play a card's game!") d
   hit_type.reward = 0.01
 end
 
-DOMAIN_NAME = "klikker.net"
-WINDOWS_IP = "50.57.141.31"
-WINDOWS_PHOTON_PORT = "5055"
-WINDOWS_SERVER_IP = "#{WINDOWS_IP}:4567"
-TARGET_SERVER_IP = "50.57.187.207"
-
 JS = {
   :json       => 'http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js',
   :spine      => 'http://cdnjs.cloudflare.com/ajax/libs/spinejs/0.0.4/spine.min.js',

@@ -4,14 +4,13 @@ class GamesController < ApplicationController
   before_filter :researcher_required, :only   => [:mturk, :new, :create, :dashboard]
   before_filter :find_game,           :except => [:new, :create, :delete_all, :frame]
 
-  helper_method :web_player_url
+  helper_method :unity_player_url
 
   def delete_all
     Game.transaction do
       [Game, Gameuser, Event].each &:destroy_all
     end
-    uri = URI("http://#{WINDOWS_SERVER_IP}/instance/delete_all")
-    res = Net::HTTP.get(uri)
+    WindowsServer.delete_all_instances
 
     redirect_to root_path, :notice => "Deleted all games!"
   end
@@ -57,7 +56,7 @@ class GamesController < ApplicationController
       :userid    => current_user.id,
       :gameid    => @game.id,
       :isamazon  => (@current_game and @current_game[:worker_id] ? 1 : 0),
-      :webplayer => web_player_url
+      :webplayer => unity_player_url
     }
   end
 
@@ -145,9 +144,7 @@ class GamesController < ApplicationController
     redirect_to root_path, :error => "Cannot find game!" unless @game
   end
 
-  def web_player_url
-    raise "game isn't assigned" unless @game
-    
-    "http://#{WINDOWS_SERVER_IP}/instance/#{@game.id}.unity3d"
+  def unity_player_url
+    WindowsServer.unity_player_url(@game)
   end
 end

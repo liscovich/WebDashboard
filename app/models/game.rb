@@ -27,24 +27,7 @@ class Game < ActiveRecord::Base
   end
 
   def post_mturk!(redirect_url)
-    uri = URI("http://#{WINDOWS_SERVER_IP}/new")
-    param = "-session=#{id} -server=#{WINDOWS_IP}:#{WINDOWS_PHOTON_PORT} -totalPlayers=#{totalplayers} -humanPlayers=#{humanplayers} -probability=#{contprob} -initialEndowments=#{init_endow} -payout=#{ind_payoff_shares} -cardLowValue=#{cost_defect} -cardHighValue=#{cost_coop} -exchangeRate=#{exchange_rate} -batchmode"
-
-    res = Net::HTTP.post_form(uri, 'id' => id, 'instance' => 'test', 'args' => param)
-
-    unless res.code == "200"
-      destroy
-      p res.body
-      return res.body
-      #flash_back "Cannot not start up master client!"
-    end
-
-    #uri = URI("http://#{WINDOWS_SERVER_IP}/instance/#{g.id}.unity3d")
-    #res = Net::HTTP.get(uri)
-
-    #File.open(ROOT+"/../public/flash/webplayer.unity3d", "wb") do |file|
-    #  file.write(res)
-    #end
+    WindowsServer.start_master_client!(self)
 
     humanplayers.times do
       #TODO refactor
