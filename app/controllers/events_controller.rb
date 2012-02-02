@@ -4,7 +4,7 @@ class EventsController < ApplicationController
   before_filter :find_game
 
   def index
-    events = Event.where(["id > ?", params[:id]]).map{|e|
+    events = @game.events.where(["id > ?", params[:id]]).map{|e|
       {
         :id           => e.id,
         :user_id      => e.user_id,
