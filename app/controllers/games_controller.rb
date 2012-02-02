@@ -48,6 +48,13 @@ class GamesController < ApplicationController
     @hide_navigation = true
 
     @hit = RTurk::Hit.find(params[:hitId]) if params[:hitId]
+
+    @hiddens = {
+      :userid    => curret_user.id,
+      :gameid    => @game.id,
+      :isamazon  => (session[:current_game] and session[:current_game][:worker_id] ? 1 : 0),
+      :webplayer => "http://#{WINDOWS_SERVER_IP}/instance/#{@game.id}.unity3d"
+    }
   end
 
   def new
@@ -99,6 +106,10 @@ class GamesController < ApplicationController
   def dashboard
     @hero_unit_title="Trial #{@game.id}"
     @hiddens = {:gameid => @game.id}
+
+    @hiddens = {
+      :gameid => @game.id
+    }
   end
 
   def summary

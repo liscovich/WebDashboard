@@ -9,6 +9,10 @@
     = yield :head
 
   %body
+    - if @hiddens
+      - @hiddens.each do |k,v|
+        = hidden_field_tag "hidden_#{k}", v
+
     - if signed_in?
       .topbar
         .topbar-inner

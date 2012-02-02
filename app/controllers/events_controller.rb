@@ -1,7 +1,7 @@
 class EventsController < ApplicationController
   respond_to :json, :only => :index
 
-#  before_filter :find_game
+  before_filter :find_game
 
   def index
     events = Event.where(["id > ?", params[:id]]).map{|e|
