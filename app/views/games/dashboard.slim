@@ -1,6 +1,6 @@
 = content_for :javascripts do
-  == js :json
-  == js "/app/dashboard.js"
+  = js :json
+  = javascript_include_tag "app/dashboard"
 #dashboard_container
   #dashboard_inner
     #game_stats
