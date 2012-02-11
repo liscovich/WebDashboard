@@ -13,7 +13,8 @@ class ApplicationController < ActionController::Base
 
   def store_location
     # If devise model is not User, then replace :user_return_to with :{your devise model}_return_to
-    session[:user_return_to] = request.url unless ["devise/sessions", 'registrations', 'authentications'].include?(params[:controller])
+    session[:user_return_to] = request.url unless
+      ["devise/sessions", 'registrations', 'players/authentications', 'researchers/authentications', 'authentications'].include?(params[:controller])
   end
 
   def after_sign_in_path_for(resource)
