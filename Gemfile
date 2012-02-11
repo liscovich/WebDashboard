@@ -4,6 +4,7 @@ gem 'rails', '3.2.0'
 gem 'mysql2'
 gem "haml"
 gem "jquery-rails"
+gem "default_value_for"
 
 # Gems used only for assets and not required
 # in production environments by default.

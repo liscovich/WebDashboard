@@ -18,12 +18,12 @@
   <h3><strong>Sign in through one of these services:</strong></h3>
 <% end %>
 
-<a href="/auth/twitter" class="auth_provider">
+<%= content_tag :a, :href => "/#{type.pluralize}/auth/twitter", :class => "auth_provider" do %>
   <%= image_tag "icons/twitter_64.png", :size => "64x64", :alt => "Twitter" %>
-</a>
-<a href="/auth/facebook" class="auth_provider">
+<% end %>
+<%= content_tag :a, :href => "/#{type.pluralize}/auth/facebook", :class => "auth_provider" do %>
   <%= image_tag "icons/facebook_64.png", :size => "64x64", :alt => "Facebook" %>
-</a>
+<% end %>
 <!--
 <a href="/auth/google_apps" class="auth_provider">
 <%#= image_tag "icons/google_apps_64.png", :size => "64x64", :alt => "Google" %>

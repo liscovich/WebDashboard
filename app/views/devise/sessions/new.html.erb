@@ -1,19 +1,43 @@
 <% title "Sign In Options" %>
+<% head do %>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $('.form_link').click(function(e){
+        e.preventDefault();
+        $('.researcher, .player').hide();
+        var $this = $(this);
+        $this.parents('div').find('.' + $this.attr('href').replace('#', '')).show();
+      });
+    });
+  </script>
+<% end %>
 
 <div class="row">
+  <div class="span10">
+    <h3>Sign in or Login:</h3>
+    <p><%= link_to "I'm a Researcher", "#researcher", :class => 'form_link' %></p>
+    <p><%= link_to "I'm a Player", "#player", :class => 'form_link' %></p>
+  </div>
+    
   <div class="span8">
-    <h3>Sign up</h3>
 
-    <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
-      <%= render 'registrations/form', :f => f %>
-
-      <div><%= f.submit "Sign up" %></div>
-    <% end %>
+    <div class="researcher hide">
+      <%= render 'registrations/form', :type => 'researcher' %>
+    </div>
+    <div class="player hide">
+      <%= render 'registrations/form', :type => 'player' %>
+    </div>
   </div>
 
   <div class="span8">
-    <%= render 'login_form' %>
-    <%= render 'omniauth_form' %>
+    <div class="researcher hide">
+      <%= render 'login_form', :type => 'researcher' %>
+      <%= render 'omniauth_form', :type => 'researcher' %>
+    </div>
+    <div class="player hide">
+      <%= render 'login_form', :type => 'player' %>
+      <%= render 'omniauth_form', :type => 'player' %>
+    </div>
   </div>
 </div>
 <div class="clear"></div>

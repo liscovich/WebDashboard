@@ -17,3 +17,5 @@
   position: absolute;
   top: 60px;
 }
+
+label {padding-right: 5px !important;}

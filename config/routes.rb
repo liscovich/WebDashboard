@@ -1,9 +1,16 @@
 WebDashboard::Application.routes.draw do
+  devise_for :users, :controllers => {:omniauth_callbacks => 'authentications', :registrations => 'registrations'}
+  
   namespace :admin do
-    
   end
 
-  devise_for :users, :controllers => {:omniauth_callbacks => 'authentications', :registrations => 'registrations'}
+  namespace :players do
+    get 'auth/:provider' => 'authentications#thought_provider'
+  end
+
+  namespace :researchers do
+    get 'auth/:provider' => 'authentications#thought_provider'
+  end
 
   resources :logs, :only => [:index] do
     collection do

@@ -17,7 +17,7 @@
       .topbar
         .topbar-inner
           .container-fluid
-            %a{:class => 'brand', :href => '#'} AZ
+            %a{:class => 'brand', :href => root_path} AZ
             - unless @hide_navigation
               %ul.nav
                 - if current_user.researcher?
