@@ -113,14 +113,14 @@ class GamesController < ApplicationController
     data = {
       :title => @game.title,
       :description => @game.description,
-      :cont_prob => helpers.number_to_currency(@game.contprob),
-      :init_endow => @game.init_endow,
-      :cost_def => @game.cost_defect,
-      :cost_coop => @game.cost_coop,
+      :contprob    => helpers.number_to_currency(@game.contprob),
+      :init_endow  => @game.init_endow,
+      :cost_defect => @game.cost_defect,
+      :cost_coop   => @game.cost_coop,
       :ind_pay_shares => helpers.number_to_currency(@game.ind_payoff_shares, :precision => 3),
-      :exch_rate => helpers.number_to_currency(@game.exchange_rate),
-      :tot_sub => @game.totalplayers,
-      :hum_sub => @game.humanplayers
+      :exchange_rate  => helpers.number_to_currency(@game.exchange_rate),
+      :totalplayers => @game.totalplayers,
+      :humanplayers => @game.humanplayers
     }
 
     respond_with(data)
