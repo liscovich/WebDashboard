@@ -13,6 +13,7 @@ class User < ActiveRecord::Base
   has_many :authentications
   has_many :gameusers
   has_many :games
+  has_many :experiments, :foreign_key => :creator_id
 
   scope :player,     where(:role   => 'player')
   scope :researcher, where(:role   => 'researcher')

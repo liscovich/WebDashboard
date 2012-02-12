@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120211195402) do
+ActiveRecord::Schema.define(:version => 20120212114740) do
 
   create_table "authentications", :force => true do |t|
     t.integer "user_id"
@@ -40,6 +40,23 @@ ActiveRecord::Schema.define(:version => 20120211195402) do
   add_index "events", ["game_id"], :name => "index_events_game_id"
   add_index "events", ["user_id"], :name => "index_events_user_id"
 
+  create_table "experiments", :force => true do |t|
+    t.integer  "creator_id"
+    t.string   "name"
+    t.text     "short_description"
+    t.string   "title"
+    t.text     "description"
+    t.integer  "init_endow"
+    t.integer  "cost_defect"
+    t.integer  "cost_coop"
+    t.integer  "totalplayers"
+    t.integer  "humanplayers"
+    t.decimal  "contprob",          :precision => 10, :scale => 2
+    t.decimal  "ind_payoff_shares", :precision => 10, :scale => 2
+    t.decimal  "exchange_rate",     :precision => 10, :scale => 3
+    t.datetime "created_at"
+  end
+
   create_table "games", :force => true do |t|
     t.datetime "created_at"
     t.string   "gameid",            :limit => 50
@@ -60,7 +77,10 @@ ActiveRecord::Schema.define(:version => 20120211195402) do
     t.string   "rturk_url",         :limit => 100
     t.boolean  "approved",                                                        :default => false
     t.integer  "user_id"
+    t.integer  "experiment_id"
   end
+
+  add_index "games", ["experiment_id"], :name => "index_games_on_experiment_id"
 
   create_table "gameusers", :force => true do |t|
     t.integer "game_id"

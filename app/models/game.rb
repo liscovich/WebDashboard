@@ -1,11 +1,16 @@
 class Game < ActiveRecord::Base
   belongs_to :user
+  belongs_to :experiment
 
   has_many :gameusers
   has_many :users, :through => :gameusers
   has_many :events
   has_many :hits
   has_many :users, :through => :gameusers
+
+  [:title, :contprob, :init_endow, :cost_defect, :cost_coop, :ind_payoff_shares, :exchange_rate, :totalplayers, :humanplayers].each do |attr|
+    default_values attr => lambda{|g| g.experiment.send(attr)}
+  end
 
   class << self
     def get_state_name(state)

@@ -1,6 +1,7 @@
 class GamesController < ApplicationController
   respond_to :json, :only => [:template, :state]
 
+  before_filter :find_experiment,     :only   => [:new, :create]
   before_filter :researcher_required, :only   => [:mturk, :new, :create, :dashboard]
   before_filter :find_game,           :except => [:new, :create, :delete_all, :frame]
 
@@ -59,28 +60,20 @@ class GamesController < ApplicationController
   def new
     @hero_unit_title = "Create Game"
     @games = Game.all
+    @game  = @experiment.games.build
   end
 
   def create
-    p params[:ind_payoff_shares].to_f
-    
-    #TODO refactor!!
-    @game = current_user.games.build(
-      :title => params[:title], :description => params[:description], :contprob => params[:cont_prob],
-      :cost_defect => params[:cost_defect], :cost_coop => params[:cost_coop],
-      :ind_payoff_shares => params[:ind_payoff_shares].to_f, :init_endow => params[:init_endow],
-      :totalplayers  => params[:total_subjects], :humanplayers => params[:human_subjects],
-      :exchange_rate => params[:exchange_rate]
-    )
+    @game = @experiment.games.build(params[:game])
+    @game.user = current_user
 
-    unless @game.save
-      render :new and return
+    if @game.save
+      @game.post_mturk!(URI::escape(url_for([:mturk, @game])))
+
+      redirect_to [:dashboard, @game], :notice => "You created a game!"
+    else
+      render :new
     end
-
-    @game.post_mturk!(URI::escape(url_for([:mturk, @game])))
-    @game.save!
-    
-    redirect_to [:dashboard, @game], :notice => "You created a game!"
   end
 
   def destroy
@@ -134,6 +127,10 @@ class GamesController < ApplicationController
   end
 
   private
+
+  def find_experiment
+    @experiment = Experiment.find(params[:experiment_id])
+  end
 
   def find_game
     @game = Game.find(params[:id])

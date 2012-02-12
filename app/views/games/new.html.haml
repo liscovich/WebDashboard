@@ -1,0 +1,55 @@
+= head do
+  = js :json
+  = javascript_include_tag 'games/new'
+
+#gamecreate_container
+  .row
+    .span8
+      %h2 Parameters
+      = form_for @game, :url => [@experiment, :games], :class => 'form_small' do |f|
+        %fieldset
+          .clearfix
+            = f.label :title
+            .input= f.text_field :title, :class => 'hide_on_click'
+          .clearfix
+            = f.label :description
+            .input= f.text_area :description, :class => 'hide_on_click', :cols => 15, :rows => 5
+          .clearfix
+            = f.label :contprob, 'Continuation Probability'
+            .input= f.text_field :contprob, :class => 'hide_on_click'
+          .clearfix
+            = f.label :init_endow, 'Initial Endowments'
+            .input= f.text_field :init_endow, :class => 'hide_on_click'
+          .clearfix
+            = f.label :cost_defect, 'Cost of Defection'
+            .input= f.text_field :cost_defect, :class => 'hide_on_click'
+          .clearfix
+            = f.label :cost_coop, 'Cost of Cooperation'
+            .input= f.text_field :cost_coop, :class => 'hide_on_click'
+          .clearfix
+            = f.label :ind_payoff_shares, 'Individual Payoff Shares'
+            .input= f.text_field :ind_payoff_shares, :class => 'hide_on_click'
+          .clearfix
+            = f.label :exchange_rate, 'Exchange Rate'
+            .input= f.text_field :exchange_rate, :class => 'hide_on_click'
+          .clearfix
+            = f.label :totalplayers, 'Total Subjects'
+            .input= f.text_field :totalplayers, :class => 'hide_on_click'
+            /#input_total_subjects.slider
+          .clearfix
+            = f.label :humanplayers, 'Human Subjects'
+            .input= f.text_field :humanplayers, :class => 'hide_on_click'
+            /#input_human_subjects.slider
+          .clearfix
+            .input.vm= f.submit :class => 'btn primary large smaller_input'
+    .span8
+      %h2 Templates
+      #game_templates
+        - unless @games.empty?
+          - @games.each do |g|
+            .game_template_one.vm
+              %span Game #{g.id}
+              %span created #{time_ago_in_words(g.created_at)}
+              = link_to 'Use as template', [:template, g], :class => 'game-template'
+        - else
+          %span No games yet

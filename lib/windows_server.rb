@@ -21,7 +21,7 @@ class WindowsServer
 
       unless res.code == "200"
         game.destroy
-        Rail.logger.error(res.body)
+        Rails.logger.error(res.body)
         raise "Cannot not start up master client!"
       end
 

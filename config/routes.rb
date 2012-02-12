@@ -20,7 +20,9 @@ WebDashboard::Application.routes.draw do
 
   resource  :home, :as => 'home', :only => :show
   resource  :directory, :as => 'directory', :only => :show
-  resources :experiments, :only => :index
+  resources :experiments do
+    resources :games
+  end
   resources :trials, :only => :index
   
   resources :hits, :except => :show do

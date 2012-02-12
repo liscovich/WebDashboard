@@ -1,0 +1,55 @@
+.span8
+  = form_for(resource) do |f|
+    %fieldset
+        = render "shared/error_messages", :target => f.object
+
+      .clearfix
+        = f.label :name
+        = f.text_field :name
+
+      .clearfix
+        = f.label :short_description
+        = f.text_area :short_description, :cols => 15, :rows => 5
+
+      .clearfix
+        = f.label :title
+        = f.text_field :title
+
+      .clearfix
+        = f.label :description
+        = f.text_field :description
+
+      .clearfix
+        = f.label :init_endow
+        = f.text_field :init_endow
+
+      .clearfix
+        = f.label :cost_defect
+        = f.text_field :cost_defect
+
+      .clearfix
+        = f.label :cost_coop
+        = f.text_field :cost_coop
+
+      .clearfix
+        = f.label :totalplayers
+        = f.text_field :totalplayers
+
+      .clearfix
+        = f.label :humanplayers
+        = f.text_field :humanplayers
+
+      .clearfix
+        = f.label :contprob
+        = f.text_field :contprob
+
+      .clearfix
+        = f.label :ind_payoff_shares
+        = f.text_field :ind_payoff_shares
+
+      .clearfix
+        = f.label :exchange_rate
+        = f.text_field :exchange_rate
+
+      .clearfix
+        = f.submit :class => 'btn primary large'
