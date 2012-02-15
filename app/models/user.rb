@@ -3,12 +3,13 @@ class User < ActiveRecord::Base
   GENDERS = %W(male female)
   
   # Include default devise modules. Others available are: https://github.com/plataformatec/devise
-  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
+  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :authentication_keys => [:username]
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :role, :username, :gender, :location, :institution, :telephone
 
   validates :role,   :presence => true, :inclusion => ROLES,   :if => lambda{|u| u.authentications.blank? }
   validates :gender, :presence => true, :inclusion => GENDERS, :if => lambda{|u| u.authentications.blank? }
+  validates :username, :presence => true, :uniqueness => true
 
   has_many :authentications
   has_many :gameusers
