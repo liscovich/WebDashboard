@@ -41,6 +41,11 @@ $(function() {
     if ($(this).val === $(this).attr('placeholder')) $(this).val('');
     return $(this).focus();
   });
+
+  $('.toggle').click(function(e){
+    e.preventDefault();
+    $(this).next('.toggled_block').toggle();
+  });
   
   return $('.hide_on_click').blur(function() {
     var el, sub;

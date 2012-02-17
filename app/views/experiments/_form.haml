@@ -1,7 +1,7 @@
 .span8
-  = form_for(resource) do |f|
+  = form_for(resource, :html => {:multipart => true}) do |f|
     %fieldset
-        = render "shared/error_messages", :target => f.object
+      = render "shared/error_messages", :target => f.object
 
       .clearfix
         = f.label :name
@@ -50,6 +50,29 @@
       .clearfix
         = f.label :exchange_rate
         = f.text_field :exchange_rate
+
+      - if resource.source_codes.any?
+        .clearfix
+          %p.toggle= link_to "Toggle previous versions", "#"
+          .toggled_block.hide
+            - resource.source_codes.each do |sc|
+              = link_to "#{sc.created_at.to_s(:short)}", sc.file.url
+              %br
+      = f.fields_for :source_codes, f.object.source_codes.build do |sc|
+        = sc.label :file, 'Source Code'
+        = sc.file_field :file
+
+      - if resource.bin_files.any?
+        .clearfix
+          %p.toggle= link_to "Toggle previous versions", "#"
+          .toggled_block.hide
+            - resource.bin_files.each do |bf|
+              = link_to "#{sc.created_at.to_s(:short)}", bf.file.url
+              %br
+      .clearfix
+        = f.fields_for :bin_files, f.object.bin_files.build do |bf|
+          = bf.label :file, 'Bin File'
+          = bf.file_field :file
 
       .clearfix
         = f.submit :class => 'btn primary large'

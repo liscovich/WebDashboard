@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120212114740) do
+ActiveRecord::Schema.define(:version => 20120216154939) do
 
   create_table "authentications", :force => true do |t|
     t.integer "user_id"
@@ -56,6 +56,15 @@ ActiveRecord::Schema.define(:version => 20120212114740) do
     t.decimal  "exchange_rate",     :precision => 10, :scale => 3
     t.datetime "created_at"
   end
+
+  create_table "file_uploads", :force => true do |t|
+    t.integer  "uploader_id"
+    t.string   "data_type"
+    t.string   "file"
+    t.datetime "created_at"
+  end
+
+  add_index "file_uploads", ["uploader_id", "data_type"], :name => "index_file_uploads_on_uploader_id_and_data_type"
 
   create_table "games", :force => true do |t|
     t.datetime "created_at"

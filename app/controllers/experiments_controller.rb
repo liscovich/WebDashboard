@@ -12,6 +12,10 @@ class ExperimentsController < InheritedResources::Base
     create!{ experiments_path }
   end
 
+  def update
+    update!{ experiments_path }
+  end
+
   protected
 
   def begin_of_association_chain
