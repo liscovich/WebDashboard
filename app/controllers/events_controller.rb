@@ -23,6 +23,12 @@ class EventsController < ApplicationController
     respond_with(events)
   end
 
+  def create
+    Event.create!(params[:event])
+    
+    render :nothing => true
+  end
+
   private
 
   def find_game

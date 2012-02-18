@@ -6,8 +6,8 @@ class Experiment < ActiveRecord::Base
   has_many   :games, :dependent => :destroy
   
   with_options :class_name => '::ExperimentUpload', :foreign_key => :uploader_id, :dependent => :destroy do |a|
-    has_many   :source_codes, :conditions => {:data_type => 'source_code'}
-    has_many   :bin_files,    :conditions => {:data_type => 'bin_file'}
+    a.has_many :source_codes, :conditions => {:data_type => 'source_code'}
+    a.has_many :bin_files,    :conditions => {:data_type => 'bin_file'}
   end
 
   accepts_nested_attributes_for :source_codes, :bin_files, :allow_destroy => true

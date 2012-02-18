@@ -4,7 +4,7 @@
   #game_histories
     - user.gameusers.each do |gu|
       .game_info.vm
-        = link_to "Game ##{gu.game_id}", sumary_game_path(gu.game), :class => 'game'
+        = link_to "Game ##{gu.game_id}", summary_game_path(gu.game), :class => 'game'
         .status= gu.state
 - else
   %span No games yet!

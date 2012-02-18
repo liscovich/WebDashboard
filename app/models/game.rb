@@ -6,7 +6,6 @@ class Game < ActiveRecord::Base
   has_many :users, :through => :gameusers
   has_many :events
   has_many :hits
-  has_many :users, :through => :gameusers
 
   [:title, :contprob, :init_endow, :cost_defect, :cost_coop, :ind_payoff_shares, :exchange_rate, :totalplayers, :humanplayers].each do |attr|
     default_values attr => lambda{|g| g.experiment.send(attr)}

@@ -15,7 +15,7 @@ class LogsController < ApplicationController
       values << params[:game_id]
     end
     
-    logs = conditions.any? ? Log.where([conditions.join(' AND '), *values]) : Log.all
+    logs = conditions.any? ? Log.where([conditions.join(' AND '), *values]).all : Log.all
     data = logs.map {|l|
       {
         :id       => l.id,
@@ -30,7 +30,7 @@ class LogsController < ApplicationController
   end
 
   def delete_all
-    Log.destroy_all
+    Log.delete_all
     redirect_to root_url, :notice => "All logs deleted!"
   end
 end

@@ -37,7 +37,7 @@ WebDashboard::Application.routes.draw do
     end
   end
 
-  resources :events, :only => :index
+  resources :events, :only => [:index, :create]
 
   resources :games do
     collection do
