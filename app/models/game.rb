@@ -26,6 +26,10 @@ class Game < ActiveRecord::Base
     self.class.get_state_name(self.state)
   end
 
+  def set_state!(new_state)
+    update_attributes! :state => new_state
+  end
+
   def ended?
     state == 'game_ended'
   end
