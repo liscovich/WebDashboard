@@ -56,7 +56,7 @@
           %p.toggle= link_to "Toggle previous versions", "#"
           .toggled_block.hide
             - resource.source_codes.each do |sc|
-              = link_to "#{sc.created_at.to_s(:short)}", sc.file.url
+              = link_to sc.created_at.to_s(:short), sc.file.url
               %br
       = f.fields_for :source_codes, f.object.source_codes.build do |sc|
         = sc.label :file, 'Source Code'
@@ -67,7 +67,7 @@
           %p.toggle= link_to "Toggle previous versions", "#"
           .toggled_block.hide
             - resource.bin_files.each do |bf|
-              = link_to "#{sc.created_at.to_s(:short)}", bf.file.url
+              = link_to bf.created_at.to_s(:short), bf.file.url
               %br
       .clearfix
         = f.fields_for :bin_files, f.object.bin_files.build do |bf|
