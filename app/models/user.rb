@@ -4,9 +4,11 @@ class User < ActiveRecord::Base
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :role, :username, :gender, :location, :institution, :telephone
 
-  validates :role,   :presence => true, :inclusion => ROLES,   :if => lambda{|u| u.authentications.blank? }
-  validates :gender, :presence => true, :inclusion => GENDERS, :if => lambda{|u| u.authentications.blank? }
-  validates :username, :presence => true, :uniqueness => true
+  with_options :presence => true, :if => lambda{|u| u.authentications.blank? } do |a|
+    a.validates :role,     :inclusion => ROLES
+    a.validates :gender,   :inclusion => GENDERS
+    a.validates :username, :uniqueness => true
+  end
 
   has_many :authentications
   has_many :gameusers
@@ -25,14 +27,6 @@ class User < ActiveRecord::Base
 
   def apply_mturk(mturk_hash)
     authentications.mturk.build(:uid => mturk_hash[:mturk_id])
-  end
-
-  def password_required?
-    (authentications.empty? || !password.blank?) && super
-  end
-
-  def email_required?
-    authentications.blank?
   end
 
   def update_tracked_fields!(request)
