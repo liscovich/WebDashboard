@@ -6,6 +6,7 @@ gem "haml"
 gem "jquery-rails"
 gem "default_value_for"
 gem 'carrierwave'
+gem "fog"
 gem 'inherited_resources'
 
 # Gems used only for assets and not required

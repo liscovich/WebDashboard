@@ -6,8 +6,16 @@ class BaseUploader < CarrierWave::Uploader::Base
 #  end
 
   # Choose what kind of storage to use for this uploader:
-  storage :file
+  # storage :file
   # storage :fog
+
+  # Override to silently ignore trying to remove missing previous file
+  def remove!
+    begin
+      super
+    rescue Fog::Storage::Rackspace::NotFound
+    end
+  end
 
   # For images you might use something like this:
   # def extension_white_list

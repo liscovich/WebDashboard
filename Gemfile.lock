@@ -62,12 +62,24 @@ GEM
       warden (~> 1.1)
     diff-lcs (1.1.3)
     erubis (2.7.0)
+    excon (0.9.5)
     execjs (1.3.0)
       multi_json (~> 1.0)
     faraday (0.7.6)
       addressable (~> 2.2)
       multipart-post (~> 1.1)
       rack (~> 1.1)
+    fog (1.1.2)
+      builder
+      excon (~> 0.9.0)
+      formatador (~> 0.2.0)
+      mime-types
+      multi_json (~> 1.0.3)
+      net-scp (~> 1.0.4)
+      net-ssh (>= 2.1.3)
+      nokogiri (~> 1.5.0)
+      ruby-hmac
+    formatador (0.2.1)
     fssm (0.2.8.1)
     gem_plugin (0.2.3)
     haml (3.1.4)
@@ -167,6 +179,7 @@ GEM
     rturk (2.5.2)
       nokogiri (>= 1.4.1)
       rest-client (>= 1.4.0)
+    ruby-hmac (0.4.0)
     sass (3.1.12)
     sass-rails (3.2.4)
       railties (~> 3.2.0)
@@ -206,6 +219,7 @@ DEPENDENCIES
   compass (>= 0.11.7)
   default_value_for
   devise
+  fog
   haml
   inherited_resources
   jquery-rails
