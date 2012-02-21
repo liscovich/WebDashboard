@@ -7,10 +7,10 @@ class AuthenticationsController < ApplicationController
     if omniauth and session[:auth_type] and Authentication.joins(:user).where(conditions).exists?
       authentication = Authentication.joins(:user).where(conditions).first
       flash[:notice] = "Signed in successfully."
-      sign_in_and_redirect(:user, authentication.user)
+      sign_in_and_redirect(auth_model_scope, authenticated_user(authentication))
     elsif params[:mturk] and authentication = Authentication.mturk.find_by_uid(params[:mturk][:mturk_id])
       flash[:notice] = "Signed in successfully."
-      sign_in_and_redirect(:user, authentication.user)
+      sign_in_and_redirect(auth_model_scope, authenticated_user(authentication))
     elsif current_user
       params[:mturk] ? current_user.apply_mturk(params[:mturk]) : current_user.apply_omniauth(omniauth)
       current_user.save!
@@ -22,7 +22,7 @@ class AuthenticationsController < ApplicationController
       
       user.save!
       flash[:notice] = "Signed in successfully."
-      sign_in_and_redirect(:user, user)
+      sign_in_and_redirect(auth_model_scope, user)
     end
   end
 
@@ -45,5 +45,13 @@ class AuthenticationsController < ApplicationController
       #TODO redirect to..
       raise "undefined user type: #{session[:auth_type]}"
     end
+  end
+
+  def authenticated_user(authentication)
+    authentication.user.role.camelize.constantize.find(authentication.user.id)
+  end
+
+  def auth_model_scope
+    user_model.name.downcase.to_sym
   end
 end

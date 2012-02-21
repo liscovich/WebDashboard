@@ -1,9 +1,6 @@
 class User < ActiveRecord::Base
   ROLES   = %W(player researcher)
   GENDERS = %W(male female)
-  
-  # Include default devise modules. Others available are: https://github.com/plataformatec/devise
-  devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :authentication_keys => [:username]
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :role, :username, :gender, :location, :institution, :telephone
 

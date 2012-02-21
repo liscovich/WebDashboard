@@ -1,5 +1,6 @@
-class ExperimentsController < InheritedResources::Base
-  before_filter :authenticate_user!
+class ExperimentsController < ApplicationController
+  inherit_resources
+
   before_filter :researcher_required
 
   respond_to :html

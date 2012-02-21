@@ -28,7 +28,8 @@
             %p{:class => 'pull-right'}
               Logged in as
               = link_to "#{session[:username] || "User #{current_user.id} (#{current_user.role})"}", user_path(current_user)
-              = link_to "Sign out", destroy_user_session_path, :method => :delete, :class => 'rt'
+              = link_to "Login as player", new_researcher_session_url(:subdomain => DOMAINS[:researcher]), :class => 'rt'
+              = link_to "Sign out", destroy_player_session_path, :method => :delete, :class => 'rt'
     .container-fluid#main
       .sidebar
         = content_for :sidebar

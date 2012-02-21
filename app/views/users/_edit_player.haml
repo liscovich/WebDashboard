@@ -1,4 +1,11 @@
-= form_for user, :html => { :method => :put } do |f|
+= form_for user, :as => :user, :url => user_path(user), :html => { :method => :put } do |f|
+  = render "shared/error_messages", :target => f.object
+
+  %p
+    %label Email
+    .input
+      = f.text_field :email
+
   %p
     %label Age
     .input

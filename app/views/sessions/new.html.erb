@@ -1,0 +1,17 @@
+<% title "Sign In Options" %>
+
+<div class="row">
+  <div class="span8">
+    <div class="player">
+      <%= render 'registrations/form', :type => session[:auth_type] %>
+    </div>
+  </div>
+
+  <div class="span8">
+    <div class="player">
+      <%= render 'login_form',    :type => session[:auth_type] %>
+      <%= render 'omniauth_form', :type => session[:auth_type] %>
+    </div>
+  </div>
+</div>
+<div class="clear"></div>
