@@ -11,7 +11,7 @@ HIT_TYPE = RTurk::RegisterHITType.create(:title => "Come play a card's game!") d
   hit_type.reward = 0.01
 end
 #TODO change to 'researcher'
-DOMAINS = {:researcher => 'rails'}
+DOMAINS = {:researcher => 'rails', :home => 'http://klikker.net'}
 
 JS = {
   :json       => 'http://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js',
