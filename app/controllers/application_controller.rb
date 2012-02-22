@@ -24,7 +24,10 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_researcher_or_player!
-    redirect_to session_path(:player) unless player_signed_in? || researcher_signed_in?
+    unless player_signed_in? || researcher_signed_in?
+      as = request.subdomains.include?(DOMAINS[:researcher]) ? :researcher : :player
+      redirect_to session_path(as)
+    end
   end
 
   def current_user
