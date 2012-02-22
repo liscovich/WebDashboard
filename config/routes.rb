@@ -1,6 +1,6 @@
 WebDashboard::Application.routes.draw do
-  devise_for :researcher, :controllers => {:omniauth_callbacks => 'authentications', :sessions => "sessions", :registrations => 'registrations'}
-  devise_for :player,     :controllers => {:omniauth_callbacks => 'authentications', :sessions => "sessions", :registrations => 'registrations'}
+  devise_for :researcher, :controllers => {:omniauth_callbacks => 'authentications', :sessions => "sessions"}
+  devise_for :player,     :controllers => {:omniauth_callbacks => 'authentications', :sessions => "sessions"}
   
   namespace :admin do
   end
