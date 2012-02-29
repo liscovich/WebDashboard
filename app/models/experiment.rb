@@ -1,6 +1,7 @@
 class Experiment < ActiveRecord::Base
   attr_accessible :name, :short_description, :title, :description, :init_endow, :cost_defect, :cost_coop, :totalplayers, :humanplayers,
-    :contprob, :ind_payoff_shares, :exchange_rate, :source_code, :bin_file, :source_codes_attributes, :bin_files_attributes, :contributors_attributes
+    :contprob, :ind_payoff_shares, :exchange_rate, :source_code, :bin_file, :source_codes_attributes, :bin_files_attributes, :contributors_attributes,
+    :public, :draft
 
   has_many :user_experiments, :dependent => :delete_all
   has_many :contributors, :class_name => 'UserExperiment', :conditions => {"user_experiments.role" => UserExperiment::ROLES[:contributor]}, :dependent => :delete_all
@@ -27,11 +28,6 @@ class Experiment < ActiveRecord::Base
 
   before_save  :validate_attachments
   after_create :add_owner
-
-  #TODO remove stub
-  def active?
-    true
-  end
 
   UserExperiment::ROLES.keys.each do |n|
     define_method("add_#{n}!") do |user|

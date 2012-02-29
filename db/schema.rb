@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120222174327) do
+ActiveRecord::Schema.define(:version => 20120229155432) do
 
   create_table "authentications", :force => true do |t|
     t.integer "user_id"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(:version => 20120222174327) do
     t.datetime "created_at"
     t.boolean  "public"
     t.integer  "creator_id"
+    t.boolean  "draft"
   end
 
   add_index "experiments", ["public"], :name => "index_experiments_on_public"

@@ -19,6 +19,10 @@
           = f.link_to_add "Add a contributor", :contributors
 
       .clearfix
+        = f.label :draft
+        = f.check_box :draft
+
+      .clearfix
         = f.label :public
         = f.check_box :public
 

@@ -1,10 +1,10 @@
 .span6
   %h2.center
     = experiment.name
-    - if experiment.active?
-      %span.label.success New
-    - else
+    - if experiment.draft?
       %span.label Coming Soon
+    - else
+      %span.label.success New
   %p= experiment.short_description
   %p
     Author: #{experiment.creator.username};

@@ -8,7 +8,7 @@ class ExperimentsController < ApplicationController
 
   def index
     @public_experiments  = Experiment.public.all :include => :creator
-    @private_experiments = Experiment.private.find(current_user.user_experiments.collect(&:experiment_id), :include => :creator)
+    @private_experiments = Experiment.where(:id => current_user.user_experiments.collect(&:experiment_id)).all(:include => :creator)
   end
 
   def create
