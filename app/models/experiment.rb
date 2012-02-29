@@ -39,6 +39,10 @@ class Experiment < ActiveRecord::Base
     u.id == creator_id
   end
 
+  def game_can_be_created?
+    !draft?
+  end
+
   private
 
   def validate_attachments

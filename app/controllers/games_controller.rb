@@ -1,9 +1,10 @@
 class GamesController < ApplicationController
   respond_to :json, :only => [:template, :state]
 
-  before_filter :find_experiment,     :only   => [:new, :create]
-  before_filter :researcher_required, :only   => [:mturk, :new, :create, :dashboard]
-  before_filter :find_game,           :except => [:new, :create, :delete_all, :frame]
+  before_filter :find_experiment,        :only   => [:new, :create]
+  before_filter :ability_to_create_game, :only   => [:new, :create]
+  before_filter :researcher_required,    :only   => [:mturk, :new, :create, :dashboard]
+  before_filter :find_game,              :except => [:new, :create, :delete_all, :frame]
 
   helper_method :unity_player_url
 
@@ -130,6 +131,10 @@ class GamesController < ApplicationController
 
   def find_experiment
     @experiment = Experiment.find(params[:experiment_id])
+  end
+
+  def ability_to_create_game
+    redirect_to experiments_path unless @experiment.game_can_be_created?
   end
 
   def find_game

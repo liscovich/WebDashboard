@@ -10,5 +10,5 @@
     Author: #{experiment.creator.username};
     Added: #{experiment.created_at.to_s(:long)}
   %p
-    = link_to 'Create trial', [:new, experiment, :game], :class => 'btn primary'
+    = link_to 'Create trial', [:new, experiment, :game], :class => 'btn primary' if experiment.game_can_be_created?
     = link_to 'Edit', [:edit, experiment], :class => 'btn primary' if can_edit && current_user.can_edit?(experiment)
