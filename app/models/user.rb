@@ -6,9 +6,9 @@ class User < ActiveRecord::Base
 
   with_options :presence => true, :if => lambda{|u| u.authentications.blank? } do |a|
     a.validates :role,     :inclusion => ROLES
-    a.validates :gender,   :inclusion => GENDERS
     a.validates :username, :uniqueness => true
   end
+  validates :gender, :inclusion => GENDERS, :if => lambda{|u| u.authentications.blank? && !u.researcher? }
 
   has_many :authentications
   has_many :gameusers
