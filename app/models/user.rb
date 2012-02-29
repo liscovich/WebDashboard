@@ -13,12 +13,28 @@ class User < ActiveRecord::Base
   has_many :authentications
   has_many :gameusers
   has_many :games
-  has_many :experiments, :foreign_key => :creator_id
+  
+  has_many :experiments, :foreign_key => :creator_id # as owner
+  has_many :user_experiments, :dependent => :delete_all
 
   scope :player,     where(:role   => 'player')
   scope :researcher, where(:role   => 'researcher')
   scope :male,       where(:gender => 'male')
   scope :female,     where(:gender => 'female')
+
+  def can_view?(experiment_or_id)
+    #TODO public?
+    experiment_id = experiment_or_id.is_a?(Experiment) ? experiment_or_id.id : experiment_or_id
+    # .all to cache all user_experiments
+    !!user_experiments.all.find{|ue| ue.experiment_id == experiment_id }
+  end
+
+  def can_edit?(experiment_or_id)
+    #TODO public?
+    experiment_id = experiment_or_id.is_a?(Experiment) ? experiment_or_id.id : experiment_or_id
+    # .all to cache all user_experiments
+    !!user_experiments.all.find{|ue| ue.experiment_id == experiment_id && (ue.role == UserExperiment::ROLES[:owner] || ue.role == UserExperiment::ROLES[:contributor]) }
+  end
 
   def apply_omniauth(omniauth)
     self.email = omniauth['user_info']['email'] if email.blank? and omniauth['user_info']

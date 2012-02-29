@@ -2,15 +2,17 @@ class ExperimentsController < ApplicationController
   inherit_resources
 
   before_filter :researcher_required
+  before_filter :permissions_check, :only => [:edit, :update]
 
   respond_to :html
 
   def index
-    @experiments = Experiment.all
+    @public_experiments  = Experiment.public.all :include => :creator
+    @private_experiments = Experiment.private.find(current_user.user_experiments.collect(&:experiment_id), :include => :creator)
   end
 
   def create
-    create!{ experiments_path }
+    create! { experiments_path }
   end
 
   def update
@@ -19,7 +21,11 @@ class ExperimentsController < ApplicationController
 
   protected
 
+  def permissions_check
+    redirect_to experiments_path unless current_user.can_edit?(Experiment.find(params[:id]))
+  end
+
   def begin_of_association_chain
-    current_user
+    ['new', 'create'].include?(params[:action]) ? current_user : nil
   end
 end

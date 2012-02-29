@@ -1,3 +1,9 @@
+GIT
+  remote: https://github.com/ryanb/nested_form.git
+  revision: 486e0f0e93f3ca455d5d0fc7869053257b6afce2
+  specs:
+    nested_form (0.2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -61,7 +67,16 @@ GEM
       railties (~> 3.1)
       warden (~> 1.1)
     diff-lcs (1.1.3)
+    em-http-request (0.3.0)
+      addressable (>= 2.0.0)
+      escape_utils
+      eventmachine (>= 0.12.9)
+    em-websocket (0.3.6)
+      addressable (>= 2.1.1)
+      eventmachine (>= 0.12.9)
     erubis (2.7.0)
+    escape_utils (0.2.4)
+    eventmachine (0.12.10)
     excon (0.9.5)
     execjs (1.3.0)
       multi_json (~> 1.0)
@@ -219,12 +234,15 @@ DEPENDENCIES
   compass (>= 0.11.7)
   default_value_for
   devise
+  em-http-request
+  em-websocket
   fog
   haml
   inherited_resources
   jquery-rails
   mongrel (>= 1.2.0.pre2)
   mysql2
+  nested_form!
   omniauth
   omniauth-facebook
   omniauth-twitter

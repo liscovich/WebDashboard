@@ -8,6 +8,7 @@ gem "default_value_for"
 gem 'carrierwave'
 gem "fog"
 gem 'inherited_resources'
+gem 'nested_form', :git => 'https://github.com/ryanb/nested_form.git'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -18,6 +19,7 @@ group :assets do
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   gem 'therubyracer'
   gem 'uglifier', '>= 1.0.3'
+#  gem 'jquery-ui-rails'
 end
 
 gem 'yajl-ruby'
@@ -36,6 +38,10 @@ gem "omniauth-twitter"
 gem 'omniauth-facebook'
 #gem 'openid'
 #gem 'omniauth-openid'
+
+# for Photon
+gem "em-websocket", :require => nil
+gem "em-http-request", :require => nil
 
 group :development do
   gem "mongrel", '>= 1.2.0.pre2'

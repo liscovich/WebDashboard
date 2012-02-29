@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120216154939) do
+ActiveRecord::Schema.define(:version => 20120222174327) do
 
   create_table "authentications", :force => true do |t|
     t.integer "user_id"
@@ -41,7 +41,6 @@ ActiveRecord::Schema.define(:version => 20120216154939) do
   add_index "events", ["user_id"], :name => "index_events_user_id"
 
   create_table "experiments", :force => true do |t|
-    t.integer  "creator_id"
     t.string   "name"
     t.text     "short_description"
     t.string   "title"
@@ -55,7 +54,11 @@ ActiveRecord::Schema.define(:version => 20120216154939) do
     t.decimal  "ind_payoff_shares", :precision => 10, :scale => 2
     t.decimal  "exchange_rate",     :precision => 10, :scale => 3
     t.datetime "created_at"
+    t.boolean  "public"
+    t.integer  "creator_id"
   end
+
+  add_index "experiments", ["public"], :name => "index_experiments_on_public"
 
   create_table "file_uploads", :force => true do |t|
     t.integer  "uploader_id"
@@ -125,6 +128,14 @@ ActiveRecord::Schema.define(:version => 20120216154939) do
   create_table "tests", :force => true do |t|
     t.string "name", :limit => 50
   end
+
+  create_table "user_experiments", :force => true do |t|
+    t.integer "user_id"
+    t.integer "experiment_id"
+    t.integer "role",          :limit => 3
+  end
+
+  add_index "user_experiments", ["user_id", "experiment_id"], :name => "index_user_experiments_on_user_id_and_experiment_id"
 
   create_table "users", :force => true do |t|
     t.string   "username",            :limit => 50

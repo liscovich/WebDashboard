@@ -1,0 +1,14 @@
+.span6
+  %h2.center
+    = experiment.name
+    - if experiment.active?
+      %span.label.success New
+    - else
+      %span.label Coming Soon
+  %p= experiment.short_description
+  %p
+    Author: #{experiment.creator.username};
+    Added: #{experiment.created_at.to_s(:long)}
+  %p
+    = link_to 'Create trial', [:new, experiment, :game], :class => 'btn primary'
+    = link_to 'Edit', [:edit, experiment], :class => 'btn primary' if can_edit && current_user.can_edit?(experiment)

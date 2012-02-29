@@ -1,7 +1,26 @@
+- head do
+  :javascript
+    $(document).ready(function(){
+      $(".chzn-select").chosen();
+      $('#autocomplete').autocomplete({source: '/users', minLength: 3});
+    })
+
 .span8
-  = form_for(resource, :html => {:multipart => true}) do |f|
+  = nested_form_for(resource, :html => {:multipart => true}) do |f|
     %fieldset
       = render "shared/error_messages", :target => f.object
+
+      - if resource.owner?(current_user)
+        .clearfix.width_700
+          = f.fields_for :contributors do |contributors|
+            = contributors.select :user_id, Researcher.except_me(current_user).all.collect{|r| [r.username, r.id] }, {}, :data => {:placeholder => 'Select a contributor'}, :class => 'chzn-select chzn-done'
+            = contributors.select :role, UserExperiment::ROLES.except(:owner), {}, :data => {:placeholder => 'Select a role'}, :class => 'chzn-select chzn-done'
+            = contributors.link_to_remove "Remove this contributor"
+          = f.link_to_add "Add a contributor", :contributors
+
+      .clearfix
+        = f.label :public
+        = f.check_box :public
 
       .clearfix
         = f.label :name

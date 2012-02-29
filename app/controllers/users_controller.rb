@@ -2,6 +2,16 @@ class UsersController < ApplicationController
   before_filter :authenticate_researcher_or_player!
   before_filter :assign_user
 
+  respond_to :html, :json
+
+  def index
+    @users = User.where("username like ?", "#{params[:term]}%")
+    
+    respond_with(@users) do |format|
+      format.json { render :json => @users.collect(&:username) }
+    end
+  end
+
   def show
   end
 

@@ -3,18 +3,11 @@
   %p Vestibulum id ligula porta felis euismod semper. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
   = link_to 'New Experiment', new_experiment_path
 .row
-  - for experiment in @experiments do
-    .span6
-      %h2.center
-        = experiment.name
-        - if experiment.active?
-          %span.label.success New
-        - else
-          %span.label Coming Soon
-      %p= experiment.short_description
-      %p
-        Author: #{experiment.creator.username};
-        Added: #{experiment.created_at.to_s(:long)}
-      %p
-        = link_to 'Create trial', [:new, experiment, :game], :class => 'btn primary'
-        = link_to 'Edit', [:edit, experiment], :class => 'btn primary' if experiment.creator_id == current_user.id
+  .span12 Private
+  = render @private_experiments, :can_edit => true
+
+.row
+  .span12 Public
+.row
+  = render @public_experiments, :can_edit => false
+    
