@@ -14,7 +14,7 @@ class FeedEvent < ActiveRecord::Base
     def feed_for_user(user)
       experiment_ids = user.user_experiments.select('experiment_id').collect(&:experiment_id)
       where(["(target_id in (?) AND target_type=?) OR (target_parent_id in (?) AND target_parent_type=?) AND author_id != ?",
-        experiment_ids, 'Experiment', experiment_ids, 'Experiment', user.id]).includes(:author)
+        experiment_ids, 'Experiment', experiment_ids, 'Experiment', user.id]).includes(:author, :target, :target_parent)
     end
   end
 
