@@ -3,8 +3,12 @@
 %p
   %table.zebra-striped
     %tbody
-      - for event in @activities do
+      - if @activities.any?
+        - for event in @activities do
+          %tr
+            %td= humanize_event(event)
         %tr
-          %td= humanize_event(event)
-      %tr
-        %td= paginate @activities
+          %td= paginate @activities
+      - else
+        %tr
+          %td There are no events yet!

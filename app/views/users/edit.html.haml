@@ -5,9 +5,8 @@
   #change_password
     = render 'edit_password', :user => @user
 
-  - if current_user.researcher?
-    #change_notifications
-      = render 'edit_notifications', :user => @user
+  #change_notifications
+    = render 'edit_notifications', :user => @user
 
   #edit_personal_info
     %h4 Edit profile

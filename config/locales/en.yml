@@ -13,6 +13,7 @@ en:
   object-type:
     experiment: "Experiment"
     experiment_upload: "Source code"
+    game: "Game"
 
   event-type:
     experiment-created:
@@ -26,6 +27,11 @@ en:
       author: "by %{author}"
     experiment_upload-created:
       action: "New %{object_type} created"
+      title-pattern: "%{action} %{author} %{subject}"
+      author: "by %{author}"
+      subject: "related to %{subject}"
+    game-created:
+      action: "New %{object_type} %{name} created"
       title-pattern: "%{action} %{author} %{subject}"
       author: "by %{author}"
       subject: "related to %{subject}"

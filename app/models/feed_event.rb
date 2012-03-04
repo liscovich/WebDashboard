@@ -13,8 +13,9 @@ class FeedEvent < ActiveRecord::Base
   class << self
     def feed_for_user(user)
       experiment_ids = user.user_experiments.select('experiment_id').collect(&:experiment_id)
-      where(["(target_id in (?) AND target_type=?) OR (target_parent_id in (?) AND target_parent_type=?) AND author_id != ?",
-        experiment_ids, 'Experiment', experiment_ids, 'Experiment', user.id]).includes(:author, :target, :target_parent)
+      where(["((target_id in (?) AND target_type=?) OR (target_parent_id in (?) AND target_parent_type=?)) AND author_id != ?",
+        experiment_ids, 'Experiment', experiment_ids, 'Experiment', user.id]).includes(:author, :target_parent)
+#        experiment_ids, 'Experiment', experiment_ids, 'Experiment', user.id]).includes(:author, :target, :target_parent)
     end
   end
 
@@ -24,6 +25,8 @@ class FeedEvent < ActiveRecord::Base
     case target_type
     when 'Experiment'
       Notifiers::Experiment.new(self).notify!
+    when 'Game'
+      Notifiers::Game.new(self).notify!
     end
   end
 end

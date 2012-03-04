@@ -5,7 +5,7 @@ class Notifiers::Base
     self.object = object
   end
 
-  def notify!(stream)
-    raise "unimplemented"
+  def notify!
+    send "on_#{object.action}!"
   end
 end

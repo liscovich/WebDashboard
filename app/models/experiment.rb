@@ -8,13 +8,13 @@ class Experiment < ActiveRecord::Base
   has_many :contributors, :class_name => 'UserExperiment', :conditions => {"user_experiments.role" => UserExperiment::ROLES[:contributor]}, :dependent => :delete_all
 
   has_many :games,   :dependent => :destroy
-  has_many :feed_events, :dependent => :delete_all, :conditions => {:target_type => 'Experiment'}, :foreign_key => :target_id
+  has_many :feed_events, :dependent => :delete_all, :conditions => {:target_type => self.name}, :foreign_key => :target_id
 
   belongs_to :creator, :class_name => 'User', :foreign_key => :creator_id
   
   with_options :class_name => '::ExperimentUpload', :foreign_key => :uploader_id, :dependent => :destroy do |a|
-    a.has_many :source_codes, :conditions => {:data_type => 'source_code', :uploader_type => 'Experiment'}
-    a.has_many :bin_files,    :conditions => {:data_type => 'bin_file',    :uploader_type => 'Experiment'}
+    a.has_many :source_codes, :conditions => {:data_type => 'source_code', :uploader_type => self.name}
+    a.has_many :bin_files,    :conditions => {:data_type => 'bin_file',    :uploader_type => self.name}
   end
 
   accepts_nested_attributes_for :source_codes, :bin_files, :contributors, :allow_destroy => true

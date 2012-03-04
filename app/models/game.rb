@@ -6,11 +6,16 @@ class Game < ActiveRecord::Base
   has_many :users, :through => :gameusers
   has_many :events
   has_many :hits
+  has_many :feed_events, :dependent => :delete_all, :conditions => {:target_type => self.name}, :foreign_key => :target_id
 
   [:title, :contprob, :init_endow, :cost_defect, :cost_coop, :ind_payoff_shares, :exchange_rate, :totalplayers, :humanplayers].each do |attr|
     default_values attr => lambda{|g| g.experiment.send(attr)}
   end
 
+  after_create do
+    feed_events.create! :action => 'created', :author_id => user_id, :target_parent_type => 'Experiment', :target_parent_id => experiment_id
+  end
+  
   class << self
     def get_state_name(state)
       {
