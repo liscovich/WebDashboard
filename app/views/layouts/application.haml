@@ -22,6 +22,8 @@
               %ul.nav
                 - if current_user.researcher?
                   %li
+                    %a{:href => dashboard_home_path} Dashboard
+                  %li
                     %a{:href => experiments_path} Experiments
                 %li{:class => request.path == '/trials' ? 'active' : ''}
                   %a{:href => trials_path} Trials

@@ -1,0 +1,10 @@
+%h1 New Feed
+
+%p
+  %table.zebra-striped
+    %tbody
+      - for event in @activities do
+        %tr
+          %td= humanize_event(event)
+      %tr
+        %td= paginate @activities

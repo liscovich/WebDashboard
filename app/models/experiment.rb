@@ -4,14 +4,17 @@ class Experiment < ActiveRecord::Base
     :public, :draft
 
   has_many :user_experiments, :dependent => :delete_all
+  has_many :users, :through => :user_experiments
   has_many :contributors, :class_name => 'UserExperiment', :conditions => {"user_experiments.role" => UserExperiment::ROLES[:contributor]}, :dependent => :delete_all
-  has_many :games, :dependent => :destroy
+
+  has_many :games,   :dependent => :destroy
+  has_many :feed_events, :dependent => :delete_all, :conditions => {:target_type => 'Experiment'}, :foreign_key => :target_id
 
   belongs_to :creator, :class_name => 'User', :foreign_key => :creator_id
   
   with_options :class_name => '::ExperimentUpload', :foreign_key => :uploader_id, :dependent => :destroy do |a|
-    a.has_many :source_codes, :conditions => {:data_type => 'source_code'}
-    a.has_many :bin_files,    :conditions => {:data_type => 'bin_file'}
+    a.has_many :source_codes, :conditions => {:data_type => 'source_code', :uploader_type => 'Experiment'}
+    a.has_many :bin_files,    :conditions => {:data_type => 'bin_file',    :uploader_type => 'Experiment'}
   end
 
   accepts_nested_attributes_for :source_codes, :bin_files, :contributors, :allow_destroy => true
@@ -26,8 +29,20 @@ class Experiment < ActiveRecord::Base
   scope :public,  where(:public => true)
   scope :private, where(:public => false)
 
-  before_save  :validate_attachments
-  after_create :add_owner
+  after_create do
+    add_owner!(creator)
+#    FeedEvent.create! :tags => [
+#      {:namespace => "experiment", :predicate => "", :value => id},
+#      {:namespace => "event", :predicate => "type", :value => 'created'},
+#      {:namespace => "event", :predicate => "target", :value => 'created'}
+#    ]
+    feed_events.create! :action => 'created', :author_id => creator_id
+  end
+  
+  before_save :validate_attachments
+  after_save do
+    feed_events.create! :action => 'updated', :author_id => Thread.current["current_user_id"]
+  end
 
   UserExperiment::ROLES.keys.each do |n|
     define_method("add_#{n}!") do |user|
@@ -48,9 +63,5 @@ class Experiment < ActiveRecord::Base
   def validate_attachments
     errors.add :source_codes, "can't be blank" unless source_codes.any?
     errors.add :bin_files,    "can't be blank" unless bin_files.any?
-  end
-
-  def add_owner
-    add_owner!(creator)
   end
 end

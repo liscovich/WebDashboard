@@ -2,4 +2,30 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
+  filter:
+    date:
+      default: "Anytime"
+      today: "Today"
+      yesterday: "Yesterday"
+      lastweek: "Last week"
+      lastmonth: "Last month"
+
+  object-type:
+    experiment: "Experiment"
+    experiment_upload: "Source code"
+
+  event-type:
+    experiment-created:
+      action: "New %{object_type} %{name} created"
+      title-pattern: "%{action} %{author}"
+      author: "by %{author}"
+      subject: "%{subject}"
+    experiment-updated:
+      action: "%{object_type} %{name} updated"
+      title-pattern: "%{action} %{author}"
+      author: "by %{author}"
+    experiment_upload-created:
+      action: "New %{object_type} created"
+      title-pattern: "%{action} %{author} %{subject}"
+      author: "by %{author}"
+      subject: "related to %{subject}"

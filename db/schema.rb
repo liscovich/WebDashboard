@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120229155432) do
+ActiveRecord::Schema.define(:version => 20120302102745) do
 
   create_table "authentications", :force => true do |t|
     t.integer "user_id"
@@ -61,14 +61,31 @@ ActiveRecord::Schema.define(:version => 20120229155432) do
 
   add_index "experiments", ["public"], :name => "index_experiments_on_public"
 
+  create_table "feed_events", :force => true do |t|
+    t.integer  "target_id"
+    t.string   "target_type"
+    t.integer  "target_parent_id"
+    t.string   "target_parent_type"
+    t.string   "action"
+    t.string   "message"
+    t.integer  "author_id"
+    t.datetime "created_at"
+  end
+
+  add_index "feed_events", ["author_id"], :name => "index_feed_events_on_author_id"
+  add_index "feed_events", ["target_parent_type", "target_parent_id"], :name => "target_parent_type_id"
+  add_index "feed_events", ["target_type", "target_id"], :name => "target_type_id"
+
   create_table "file_uploads", :force => true do |t|
     t.integer  "uploader_id"
     t.string   "data_type"
     t.string   "file"
     t.datetime "created_at"
+    t.string   "uploader_type"
   end
 
   add_index "file_uploads", ["uploader_id", "data_type"], :name => "index_file_uploads_on_uploader_id_and_data_type"
+  add_index "file_uploads", ["uploader_type"], :name => "index_file_uploads_on_uploader_type"
 
   create_table "games", :force => true do |t|
     t.datetime "created_at"

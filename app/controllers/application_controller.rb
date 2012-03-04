@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   before_filter :store_location
+  before_filter :store_current_user
 
   helper_method :current_user
 
@@ -11,6 +12,10 @@ class ApplicationController < ActionController::Base
 
   def researcher_required
     redirect_to new_researcher_session_url(:subdomain => DOMAINS[:researcher]), :error => "You must be a researcher!" unless current_user.try(:researcher?)
+  end
+
+  def store_current_user
+    Thread.current["current_user_id"] = current_user.id if signed_in?
   end
 
   def store_location

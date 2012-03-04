@@ -19,7 +19,9 @@ WebDashboard::Application.routes.draw do
     end
   end
 
-  resource  :home, :as => 'home', :only => :show
+  resource  :home, :as => 'home', :controller => 'home', :only => :show do
+    get :dashboard
+  end
   resource  :directory, :as => 'directory', :only => :show
   resources :experiments do
     resources :games

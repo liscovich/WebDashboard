@@ -8,7 +8,7 @@ class ExperimentsController < ApplicationController
 
   def index
     @public_experiments  = Experiment.public.all :include => :creator
-    @private_experiments = Experiment.where(:id => current_user.user_experiments.collect(&:experiment_id)).all(:include => :creator)
+    @private_experiments = Experiment.where(:id => current_user.user_experiments.select('experiment_id').collect(&:experiment_id)).all(:include => :creator)
   end
 
   def create
@@ -16,7 +16,7 @@ class ExperimentsController < ApplicationController
   end
 
   def update
-    update!{ experiments_path }
+    update! { experiments_path }
   end
 
   protected

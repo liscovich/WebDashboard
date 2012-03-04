@@ -10,6 +10,9 @@ gem "fog"
 gem 'inherited_resources'
 gem 'nested_form', :git => 'https://github.com/ryanb/nested_form.git'
 
+# simple pagination
+gem "kaminari"
+
 # Gems used only for assets and not required
 # in production environments by default.
 gem 'sass-rails', '~> 3.2.3'
