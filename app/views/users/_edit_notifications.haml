@@ -1,0 +1,14 @@
+%h4 Notification options
+
+= form_for user, :as => :user, :url => user_path(user), :html => { :method => :put } do |f|
+  %p
+    = f.label :notify_email, 'By email'
+    .input
+      = f.check_box :notify_email
+  %p
+    = f.label :notify_fb, 'By Facebook'
+    .input
+      = f.check_box :notify_fb
+  %p
+    .input
+      = f.submit 'Save changes', :class => 'btn success'

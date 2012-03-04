@@ -27,5 +27,10 @@ class Notifiers::Experiment < Notifiers::Base
 
   def notify_user!(user)
     #TODO notify_user!
+    if user.notify_email?
+      
+    elsif user.notify_fb?
+
+    end
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120302102745) do
+ActiveRecord::Schema.define(:version => 20120304175221) do
 
   create_table "authentications", :force => true do |t|
     t.integer "user_id"
@@ -168,6 +168,8 @@ ActiveRecord::Schema.define(:version => 20120302102745) do
     t.string   "gender"
     t.string   "role"
     t.boolean  "admin",                              :default => false
+    t.boolean  "notify_email"
+    t.boolean  "notify_fb"
   end
 
   add_index "users", ["role"], :name => "index_users_on_role"

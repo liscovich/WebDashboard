@@ -31,11 +31,6 @@ class Experiment < ActiveRecord::Base
 
   after_create do
     add_owner!(creator)
-#    FeedEvent.create! :tags => [
-#      {:namespace => "experiment", :predicate => "", :value => id},
-#      {:namespace => "event", :predicate => "type", :value => 'created'},
-#      {:namespace => "event", :predicate => "target", :value => 'created'}
-#    ]
     feed_events.create! :action => 'created', :author_id => creator_id
   end
   
