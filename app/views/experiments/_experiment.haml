@@ -1,6 +1,6 @@
 .span6
   %h2.center
-    = experiment.name
+    = details_link ? link_to(experiment.name, experiment) : experiment.name
     - if experiment.draft?
       %span.label Coming Soon
     - else

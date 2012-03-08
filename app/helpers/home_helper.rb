@@ -3,19 +3,19 @@ module HomeHelper
     name, subject = case event.target_type
     when 'Experiment'
       [
-        link_to(event.target.name, edit_experiment_path(event.target_parent_id)),
-        link_to(I18n.t("object-type.#{event.target_type.underscore}"), edit_experiment_path(event.target_parent_id)),
+        link_to(event.target.name, experiment_path(event.target_parent_id)),
+        link_to(I18n.t("object-type.#{event.target_type.underscore}"), experiment_path(event.target_parent_id)),
         nil
       ]
     when 'ExperimentUpload'
       [
         nil,
-        link_to(event.target_parent.name, edit_experiment_path(event.target_parent_id))
+        link_to(event.target_parent.name, experiment_path(event.target_parent_id))
       ]
     when 'Game'
       [
         link_to(event.target.title, dashboard_game_path(event.target_id)),
-        link_to(event.target_parent.name, edit_experiment_path(event.target_parent_id))
+        link_to(event.target_parent.name, experiment_path(event.target_parent_id))
       ]
     else
       raise "undefined target_type: #{event.target_type}, event_id: #{event.id}"

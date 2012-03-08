@@ -2,7 +2,8 @@ class ExperimentsController < ApplicationController
   inherit_resources
 
   before_filter :researcher_required
-  before_filter :permissions_check, :only => [:edit, :update]
+  before_filter :show_permissions_check, :only => :show
+  before_filter :edit_permissions_check, :only => [:edit, :update]
 
   respond_to :html
 
@@ -21,7 +22,11 @@ class ExperimentsController < ApplicationController
 
   protected
 
-  def permissions_check
+  def show_permissions_check
+    redirect_to experiments_path unless current_user.can_view?(Experiment.find(params[:id]))
+  end
+
+  def edit_permissions_check
     redirect_to experiments_path unless current_user.can_edit?(Experiment.find(params[:id]))
   end
 

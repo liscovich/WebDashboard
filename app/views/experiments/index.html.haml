@@ -4,10 +4,10 @@
   = link_to 'New Experiment', new_experiment_path
 .row
   .span12 Private
-  = render @private_experiments, :can_edit => true
+  = render @private_experiments, :details_link => true, :can_edit => true
 
 .row
   .span12 Public
 .row
-  = render @public_experiments, :can_edit => false
+  = render @public_experiments, :details_link => true, :can_edit => false
     
