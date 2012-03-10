@@ -1,0 +1,10 @@
+!!!
+%html
+  %head
+    %title= content_for?(:title) ? yield(:title) : 'AZ - Trials'
+    = yield :head
+
+  %body
+    = yield
+    %footer
+      %p &copy; Mturk Group 2011

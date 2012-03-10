@@ -3,30 +3,37 @@ class Notifiers::Game < Notifiers::Base
 
   def on_created!
     each_user do |user|
-      next if user.id == object.target.creator_id
-
       notify_user!(user)
     end
-  end
 
-  def on_updated!
-    each_user do |user|
-      next if user.id == object.author_id # skip event creator
+    each_reasearcher do |user|
+      next if user.id == object.user_id # creator
 
-      notify_user!(user)
+      notify_researcher!(object.experiment, user)
     end
   end
 
   def each_user(&block)
-    object.target.users.each{|user| yield user }
+    User.each{|user| yield user }
   end
 
   def notify_user!(user)
-    #TODO notify_user!
     if user.notify_email?
-      
+      UserMailer.send("game_created", object, user).deliver
     elsif user.notify_fb?
+      #TODO
+    end
+  end
 
+  def each_reasearcher(&block)
+    object.experiment.users.each{|user| yield user }
+  end
+
+  def notify_researcher!(experiment, user)
+    if user.notify_email?
+      ResearcherMailer.send("game_created", object, experiment, user).deliver
+    elsif user.notify_fb?
+      #TODO
     end
   end
 end

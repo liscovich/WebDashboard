@@ -48,6 +48,10 @@ class User < ActiveRecord::Base
   def update_tracked_fields!(request)
     super(request) unless admin?
   end
+
+  def notify_by_email?
+    !email.blank? and notify_email?
+  end
   
   def get_name
     self.username || "User #{self.id}"
