@@ -1,12 +1,17 @@
 class EventsController < ApplicationController
-  before_filter :find_game, :only => :index
-
   def index
-    params[:id] = 0 if params[:id].blank?
-    
-    events = @game.events.where(["id > ?", params[:id]]).map{|e|
+    chain = if params[:debug]
+      Event.all
+    else
+      game       = Game.find(params[:game_id])
+      conditions = params[:id].blank? ? nil : ["id > ?", params[:id]]
+      game.events.where(conditions)
+    end
+
+    events = chain.map{|e|
       {
         :id           => e.id,
+        :game_id      => e.game_id,
         :user_id      => e.user_id,
         :event_type   => e.event_type,
         :state        => e.state,
@@ -31,11 +36,5 @@ class EventsController < ApplicationController
     else
       render :json => {:status => 'record invalid', :errors => e.errors.full_messages}
     end
-  end
-
-  private
-
-  def find_game
-    @game = Game.find(params[:game_id])
   end
 end
