@@ -2,6 +2,8 @@ class EventsController < ApplicationController
   before_filter :find_game, :only => :index
 
   def index
+    params[:id] = 0 if params[:id].blank?
+    
     events = @game.events.where(["id > ?", params[:id]]).map{|e|
       {
         :id           => e.id,
