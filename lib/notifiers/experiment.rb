@@ -27,7 +27,7 @@ class Notifiers::Experiment < Notifiers::Base
 
   def notify_user!(user, action)
     if user.notify_by_email?
-      ResearcherMailer.send("experiment_#{action}", object, user).deliver
+      ResearcherMailer.send("experiment_#{action}", object.target, user).deliver
     elsif user.notify_fb?
       #TODO
     end

@@ -9,24 +9,24 @@ class Notifiers::Game < Notifiers::Base
     each_reasearcher do |user|
       next if user.id == object.user_id # creator
 
-      notify_researcher!(object.experiment, user)
+      notify_researcher!(object.target, user)
     end
   end
 
   def each_user(&block)
-    User.each{|user| yield user }
+    User.all.each{|user| yield user }
   end
 
   def notify_user!(user)
     if user.notify_email?
-      UserMailer.send("game_created", object, user).deliver
+      UserMailer.send("game_created", object.target, user).deliver
     elsif user.notify_fb?
       #TODO
     end
   end
 
   def each_reasearcher(&block)
-    object.experiment.users.each{|user| yield user }
+    object.target.users.each{|user| yield user }
   end
 
   def notify_researcher!(experiment, user)
