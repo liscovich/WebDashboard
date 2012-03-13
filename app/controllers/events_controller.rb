@@ -1,7 +1,5 @@
 class EventsController < ApplicationController
-  respond_to :json, :only => :index
-
-  before_filter :find_game
+  before_filter :find_game, :only => :index
 
   def index
     events = @game.events.where(["id > ?", params[:id]]).map{|e|
@@ -16,17 +14,21 @@ class EventsController < ApplicationController
         :total_score  => e.total_score,
         :is_ai        => e.is_ai,
         :ai_id        => e.ai_id,
-        :score        => e.score
+        :score        => e.score,
+        :extra        => e.extra
       }.reject{|k,v| v.nil? }
     }.compact
 
-    respond_with(events)
+    render :json => events
   end
 
   def create
-    Event.create!(params[:event])
-    
-    render :nothing => true
+    e = Event.new(params[:event])
+    if e.save
+      render :json => {:status => 'ok'}
+    else
+      render :json => {:status => 'record invalid', :errors => e.errors.full_messages}
+    end
   end
 
   private
