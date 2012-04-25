@@ -46,6 +46,9 @@ gem 'omniauth-facebook'
 gem "em-websocket", :require => nil
 gem "em-http-request", :require => nil
 
+gem "faye", :require => nil
+
+
 group :development do
   gem "mongrel", '>= 1.2.0.pre2'
   gem 'rspec-rails'
