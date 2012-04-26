@@ -47,6 +47,8 @@ gem "em-websocket", :require => nil
 gem "em-http-request", :require => nil
 
 gem "faye", :require => nil
+gem "faye-redis"
+gem "thin"
 
 
 group :development do
