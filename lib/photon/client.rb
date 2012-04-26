@@ -355,7 +355,7 @@ class Photon::Client
   def raise_event(event_code, data = nil)
     if joined?
       if data
-        _send_operation(OPERATION_CODES[:raise_event, [PARAMETER_CODES[:code], event_code, PARAMETER_CODES[:data], data]])
+        _send_operation(OPERATION_CODES[:raise_event], [PARAMETER_CODES[:code], event_code, PARAMETER_CODES[:data], data])
       else
         raise "PhotonPeer[raise_event] - Event #{event_code} - data not passed"
       end
@@ -499,19 +499,5 @@ class Photon::Client
     dispatch_response(OPERATION_CODES[:set_properties], {vals:response[:vals], actor_nr: actor_nr})
   end
 
-
-  def _send_operation(operation_code, data)
-    json = {req: operation_code}
-    if data.is_a? Array
-      json[:vals] = data
-    else
-      if data.nil?
-        json[:vals] = []
-      else
-        raise 'PhotonPeer[_sendOperation] - Trying to send non array data'
-      end
-    end
-    _send(json)
-  end
 
 end
