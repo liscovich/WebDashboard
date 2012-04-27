@@ -299,7 +299,7 @@ class Photon::Client
       events = _events[name]
       type = name.slice(0,2)
       events.each do |event|
-        event.call(args || [])
+        event.call(args)
       end
     end
   end
@@ -309,7 +309,7 @@ class Photon::Client
   end
 
   def dispatch_custom_event(name, args={})
-    _dispatch("cus_#{name}", args)
+    dispatch_event("cus_#{name}", args)
   end
 
   def dispatch_response(name, args={})
@@ -428,7 +428,7 @@ class Photon::Client
     when EVENT_CODES[:join]  then _on_event_join(event, actor_nr)
     when EVENT_CODES[:leave] then _on_event_leave(actor_nr)
     when EVENT_CODES[:set_properties] then _on_event_set_properties(event, actor_nr)
-    else dispatch_custom_event(type, {vals: event[:vals], actor_nr: actor_nr})
+    else dispatch_custom_event(type, {vals: event['vals'], actor_nr: actor_nr})
     end
   end
 
@@ -437,7 +437,7 @@ class Photon::Client
       _add_actor(actor_nr)
       dispatch_event('join', {new_actors: [actor_nr]})
     else
-      event_actors = event[:vals][PARAMETER_CODES[:actors]]
+      event_actors = event['vals'][PARAMETER_CODES[:actors]]
       joined_actors = []
       event_actors.each do |actor|
         _add_actor(actor)
@@ -453,7 +453,7 @@ class Photon::Client
   end
 
   def _on_event_set_properties(event, actor_nr)
-    dispatch_event('setProperties', { vals: event[:vals], actor_nr: actor_nr } )
+    dispatch_event('setProperties', { vals: event['vals'], actor_nr: actor_nr } )
   end
 
   def _parse_response(type, response, actor_nr)
@@ -464,21 +464,21 @@ class Photon::Client
     when OPERATION_CODES[:raise_event] then return
     when OPERATION_CODES[:get_properties] then _on_response_get_properties(response, actor_nr)
     when OPERATION_CODES[:set_properties] then _on_response_set_properties(response, actor_nr)
-    else dispatch_custom_response(type, { vals: response[:vals], actor_nr: actor_nr })
+    else dispatch_custom_response(type, { vals: response['vals'], actor_nr: actor_nr })
     end
   end
 
   def _on_response_get_properties(response)
-    if actor_properties = response[:vals][PARAMETER_CODES[:actor_properties]]
+    if actor_properties = response['vals'][PARAMETER_CODES[:actor_properties]]
       actor_properties.each do |actor|
         actors[actor][:properties] = actor
       end
     end
 
-    if game_properties = response[:vals][PARAMETER_CODES[:game_properties]]
+    if game_properties = response['vals'][PARAMETER_CODES[:game_properties]]
       game[:properties] = game_properties
     end
-    dispatch_response(OPERATION_CODES[:get_properties], { vals: response[:vals] })
+    dispatch_response(OPERATION_CODES[:get_properties], { vals: response['vals'] })
   end
 
   def _on_response_join(actor_nr)
@@ -496,7 +496,7 @@ class Photon::Client
   end
 
   def _on_response_set_properties(response, actor_nr)
-    dispatch_response(OPERATION_CODES[:set_properties], {vals:response[:vals], actor_nr: actor_nr})
+    dispatch_response(OPERATION_CODES[:set_properties], {vals:response['vals'], actor_nr: actor_nr})
   end
 
 

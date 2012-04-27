@@ -42,7 +42,6 @@ module WebSocket
     def onmessage &callback
       init
       @redis.on :message do |topic, message|
-        p [:really_onmessage, message, topic]
         callback.call message if topic == @ns + "/messages"
       end
     end
