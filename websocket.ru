@@ -13,6 +13,6 @@ app = Faye::RackAdapter.new(
   }
 )
 
-app.add_extension WebSocket::Server.new(namespace: 'database_')
+app.add_extension WebSocket::Server.new
 
 run app
