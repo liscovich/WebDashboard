@@ -5,7 +5,7 @@ class Photon::Socket
     @host = host if host
     self.options.merge! options
     @connected = false
-    @connectiong = false
+    @connecting = false
     @transport = get_transport
   end
 

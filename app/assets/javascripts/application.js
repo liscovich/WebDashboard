@@ -17,6 +17,9 @@
 //= require chosen.jquery.min
 //= require game_state_tracker
 
+//= require faye.min
+//= require faye_client
+
 window.configs = {};
 
 $(function() {
@@ -29,14 +32,14 @@ $(function() {
       }, 2000);
     });
   };
-  
+
   $('[id^=hidden_]').each(function() {
     var key, val, __, _ref;
     _ref = $(this).attr('id').split('_'), __ = _ref[0], key = _ref[1];
     val = $(this).val();
     return window.configs[key] = val;
   });
-  
+
   if (!$('#error').is(":empty")) window.display_error();
 
   $('.hide_on_click').click(function() {
@@ -48,7 +51,7 @@ $(function() {
     e.preventDefault();
     $(this).next('.toggled_block').toggle();
   });
-  
+
   return $('.hide_on_click').blur(function() {
     var el, sub;
     el = $(this).get(0);

@@ -1,8 +1,13 @@
 require 'eventmachine'
 require 'faye'
 require 'faye/redis'
+
+require File.expand_path('../settings.rb', __FILE__)
+
 require File.expand_path('../websocket/redis.rb', __FILE__)
+
 DIRNAME = File.dirname(File.expand_path(__FILE__))
+
 module Photon
   autoload :Socket, "#{DIRNAME}/photon/socket"
   autoload :WebSocket, "#{DIRNAME}/photon/web_socket"
@@ -12,23 +17,49 @@ end
 EM.run do
   client = Photon::Client.new
 
-  redis_server = Faye::Redis.create(Faye::Engine::Proxy.new({}), {host: 'localhost', namespace: 'server_'})
-  redis_database = WebSocket::Redis.create({host: 'localhost', namespace: 'database_'})
+  redis_server   = Faye::Redis.create(Faye::Engine::Proxy.new({}), host: FAYE_REDIS_SERVER, namespace: FAYE_REDIS_NAMESPACE)
+  redis_database = WebSocket::Redis.create(host: FAYE_REDIS_SERVER, namespace: REDIS_NAMESPACE)
 
-  client.connect('localhost', {port: 9090})
+  client.connect(PHOTON_SERVER_HOST, port: PHOTON_SERVER_PORT)
 
   client.add_event_listener 'connect' do
-    client.join('my_room')
+    puts 'Connected to Photon Server'
+    client.join("16")
   end
 
-  client.add_custom_event_listener 123 do |data|
-    data['channel'] = '/game'
+  client.add_custom_event_listener 16 do |data|
+    puts "get custom_event data #{data.inspect}"
+
+    data['channel'] = '/messages'
+
+    puts "Publish data #{data.inspect}"
     redis_server.publish(data, [])
     redis_database.publish(data)
   end
 
-  client.add_event_listener 'join' do |data|
-    client.raise_event(123, {message: 'test'})
+  client.add_event_listener 16 do |data|
+    puts "get event data #{data}"
+    data['channel'] = '/messages'
   end
 
+  client.add_event_listener 'join' do |data|
+    puts "on join"
+    client.raise_event(16, event_type: 'new_round', state_name: 'state_name', round_id: 1, user_id: 1, ai_id: 'true')
+  end
+
+  EventMachine.add_periodic_timer(10) do
+    #client.raise_event(16, event_type: 'gamestate_update', state_name: 'state_name', round_id: 1, user_id: 1, ai_id: 'true')
+    redis_server.publish({"channel" => "/messages",
+                          :data     => {
+                              "state_name" => "Finished",
+                              "ai_id"      => "true",
+                              "event_type" => "gamestate_update",
+                              "user_id"    => 1,
+                              "player_id"    => 1,
+                              "choice"    => 3,
+                              "total_score"    => 1,
+                              "score"    => 1,
+                              "round_id"   => 1}},
+                         [])
+  end
 end

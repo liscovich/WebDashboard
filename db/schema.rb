@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(:version => 20120304175221) do
   add_index "events", ["user_id"], :name => "index_events_user_id"
 
   create_table "experiments", :force => true do |t|
+    t.integer  "creator_id"
     t.string   "name"
     t.text     "short_description"
     t.string   "title"
@@ -55,7 +56,6 @@ ActiveRecord::Schema.define(:version => 20120304175221) do
     t.decimal  "exchange_rate",     :precision => 10, :scale => 3
     t.datetime "created_at"
     t.boolean  "public"
-    t.integer  "creator_id"
     t.boolean  "draft"
   end
 
@@ -132,7 +132,7 @@ ActiveRecord::Schema.define(:version => 20120304175221) do
   create_table "logs", :force => true do |t|
     t.datetime "created_at"
     t.string   "name",       :limit => 50
-    t.text     "parameters", :limit => 16777215
+    t.text     "parameters", :limit => 2147483647
     t.string   "userid",     :limit => 50
     t.string   "gameid",     :limit => 50
     t.string   "user_id",    :limit => 50

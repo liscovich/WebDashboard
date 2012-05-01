@@ -1,7 +1,7 @@
 WebDashboard::Application.routes.draw do
   devise_for :researcher, :controllers => {:omniauth_callbacks => 'authentications', :sessions => "sessions"}
-  devise_for :player,     :controllers => {:omniauth_callbacks => 'authentications', :sessions => "sessions"}
-  
+  devise_for :player, :controllers => {:omniauth_callbacks => 'authentications', :sessions => "sessions"}
+
   namespace :admin do
   end
 
@@ -19,15 +19,18 @@ WebDashboard::Application.routes.draw do
     end
   end
 
-  resource  :home, :as => 'home', :controller => 'home', :only => :show do
+  resource :home, :as => 'home', :controller => 'home', :only => :show do
     get :dashboard
   end
-  resource  :directory, :as => 'directory', :only => :show
+
+  resource :directory, :as => 'directory', :only => :show
+
   resources :experiments do
     resources :games
   end
+
   resources :trials, :only => :index
-  
+
   resources :hits, :except => :show do
     collection do
       get :dispose_all
@@ -57,7 +60,7 @@ WebDashboard::Application.routes.draw do
       get :state
     end
 
-    resources :users,  :only => [], :controller => "games/users" do
+    resources :users, :only => [], :controller => "games/users" do
       member do
         get :earnings
         get :record_submission
@@ -65,17 +68,17 @@ WebDashboard::Application.routes.draw do
       end
     end
   end
-  
+
   resources :users do
     member do
 #      post :info
       post :researcher
-      put  :update_password
+      put :update_password
     end
   end
 
   resources :authentications
   match '/auth/:provider/callback' => 'authentications#create'
-  
+
   root :to => 'trials#index'
 end

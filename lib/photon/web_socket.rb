@@ -15,14 +15,18 @@ class Photon::WebSocket
 
   def connect
     @socket = Faye::WebSocket::Client.new(_prepare_url)
+
     @socket.onopen = lambda do |event|
     end
+
     @socket.onmessage = lambda do |event|
       _on_data(event.data)
     end
+
     @socket.onclose = lambda do |event|
       _on_close
     end
+
     @socket.onerror = lambda do |event|
       _on_error
     end

@@ -5,9 +5,9 @@ $ ->
 
   window.gst = new game_state_tracker_dashboard(game_id, 500)
 
-  setTimeout =>
-    window.gst.fetch_state()
-  , 2000
+#  setTimeout =>
+#    window.gst.fetch_state()
+#  , 2000
 
 class game_state_tracker_dashboard extends window.game_state_tracker
   constructor: ->

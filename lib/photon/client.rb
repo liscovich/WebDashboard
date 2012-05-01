@@ -1,37 +1,39 @@
 class Photon::Client
   OPERATION_CODES = {
-    join: 255,
-    leave: 254,
-    raise_event: 253,
-    set_properties: 252,
-    get_properties: 251,
-    ping: "Ping"
+      join:           255,
+      leave:          254,
+      raise_event:    253,
+      set_properties: 252,
+      get_properties: 251,
+      ping:           "Ping"
   }
+
   EVENT_CODES = {
-    join: 255,
-    leave:254,
-    properties_changed: 253,
-    connecting: 'connecting',
-    connect: 'connect',
-    connectFailed: 'connectFailed',
-    disconnect: 'disconnect',
-    error: 'error',
-    timeout: 'timeout'
+      join:               255,
+      leave:              254,
+      properties_changed: 253,
+      connecting:         'connecting',
+      connect:            'connect',
+      connectFailed:      'connectFailed',
+      disconnect:         'disconnect',
+      error:              'error',
+      timeout:            'timeout'
   }
+
   PARAMETER_CODES = {
-    game_id: 255,
-    actor_nr: 254,
-    target_actor_nr: 253,
-    actors: 252,
-    properties: 251,
-    broadcast: 250,
-    actor_properties: 249,
-    game_properties: 248,
-    cache: 247,
-    receiver_group: 246,
-    data: 245,
-    code: 244,
-    flush: 243
+      game_id:          255,
+      actor_nr:         254,
+      target_actor_nr:  253,
+      actors:           252,
+      properties:       251,
+      broadcast:        250,
+      actor_properties: 249,
+      game_properties:  248,
+      cache:            247,
+      receiver_group:   246,
+      data:             245,
+      code:             244,
+      flush:            243
   }
 
   def initialize(host = nil, options = {})
@@ -64,7 +66,7 @@ class Photon::Client
   end
 
   def my_actor
-    @my_actor ||= { photon_id: nil, properties: {} }
+    @my_actor ||= {photon_id: nil, properties: {}}
   end
 
   def my_actor=(actor)
@@ -72,7 +74,7 @@ class Photon::Client
   end
 
   def game
-    @game ||= { properties: {} }
+    @game ||= {properties: {}}
   end
 
   def game=(game)
@@ -187,24 +189,24 @@ class Photon::Client
     end
   end
 
-  def _send_operation(operation_code, data)
+  def _send_operation(operation_code, data = nil)
     json = {req: operation_code}
+
     if data.is_a? Array
       json[:vals] = data
+    elsif data.nil?
+      json[:vals] = []
     else
-      if data.nil?
-        json[:vals] = []
-      else
-        raise "PhotonPeer[_sendOperation] - Trying to send non array data"
-      end
+      raise "PhotonPeer[_sendOperation] - Trying to send non array data"
     end
+
     _send(json)
   end
 
   def _on_message_received(message)
     if message.is_a? Hash
       if !message['err'] or message['err'] == 0
-        type = ''
+        type            = ''
         message['vals'] = message['vals'] || []
         message['vals'] = _parse_message_values_array_to_json(message['vals']) if message['vals'].length > 0
         message_actor_id = message['vals']['254'] ? message['vals']['254'] : my_actor[:photon_id] ? my_actor[:photon_id] : -1
@@ -218,7 +220,7 @@ class Photon::Client
           end
         end
       else
-        raise "PhotonPeer[_on_message_received] - Response error"
+        raise "PhotonPeer[_on_message_received] - Response error\n #{message.inspect}"
       end
     end
   end
@@ -244,13 +246,13 @@ class Photon::Client
 
   def _on_connect
     @connecting = false
-    @connected = true
+    @connected  = true
     dispatch_event('connect')
   end
 
   def _on_connect_failed(evt)
     @connecting = false
-    @connected = false
+    @connected  = false
     dispatch_event('connect_failed')
   end
 
@@ -274,8 +276,8 @@ class Photon::Client
   end
 
   def _add_listener(name, &block)
-      _events[name] = [] unless _events.include? name
-      _events[name] << block if block_given?
+    _events[name] = [] unless _events.include? name
+    _events[name] << block if block_given?
   end
 
   def add_event_listener(name, &block)
@@ -297,7 +299,7 @@ class Photon::Client
   def _dispatch(name, args)
     if _events.include? name
       events = _events[name]
-      type = name.slice(0,2)
+      type   = name.slice(0, 2)
       events.each do |event|
         event.call(args)
       end
@@ -371,7 +373,7 @@ class Photon::Client
     else
       raise "PhotonPeer[set_actor_properties] - Not Joined!"
     end
- end
+  end
 
   def get_actor_properties(actor_property_keys, actor_numbers)
     if joined?
@@ -398,7 +400,7 @@ class Photon::Client
     else
       raise "PhotonPeer[set_actor_properties] - Not Joined!"
     end
- end
+  end
 
   def get_game_properties(game_property_keys)
     if joined?
@@ -408,14 +410,14 @@ class Photon::Client
       data_for_send << nil if data_for_send.length != 2
 
 
-      _send_operation(OPERATION_CODES[:get_properties, data_for_send])
+      _send_operation(OPERATION_CODES[:get_properties], data_for_send)
     else
       raise 'PhotonPeer[get_game_properties] - Not joined!'
     end
   end
 
   def _add_actor(actor_nr)
-    actors[actor_nr] = { photon_id: actor_nr }
+    actors[actor_nr] = {photon_id: actor_nr}
   end
 
   def _remove_actor(actor_nr)
@@ -425,79 +427,89 @@ class Photon::Client
 
   def _parse_event(type, event, actor_nr)
     case type
-    when EVENT_CODES[:join]  then _on_event_join(event, actor_nr)
-    when EVENT_CODES[:leave] then _on_event_leave(actor_nr)
-    when EVENT_CODES[:set_properties] then _on_event_set_properties(event, actor_nr)
-    else dispatch_custom_event(type, {vals: event['vals'], actor_nr: actor_nr})
+      when EVENT_CODES[:join] then
+        _on_event_join(event, actor_nr)
+      when EVENT_CODES[:leave] then
+        _on_event_leave(actor_nr)
+      when EVENT_CODES[:set_properties] then
+        _on_event_set_properties(event, actor_nr)
+      else
+        dispatch_custom_event(type, vals: event['vals'], actor_nr: actor_nr)
     end
   end
 
   def _on_event_join(event, actor_nr)
     if actor_nr != my_actor[:photon_id]
       _add_actor(actor_nr)
-      dispatch_event('join', {new_actors: [actor_nr]})
+      dispatch_event('join', new_actors: [actor_nr])
     else
-      event_actors = event['vals'][PARAMETER_CODES[:actors]]
+      event_actors  = event['vals'][PARAMETER_CODES[:actors]]
       joined_actors = []
       event_actors.each do |actor|
         _add_actor(actor)
         joined_actors << actor
       end
-      dispatch_event('join', { new_actors: [joined_actors]})
+      dispatch_event('join', new_actors: [joined_actors])
     end
   end
 
   def _on_event_leave(actor_nr)
     _remove_actor(actor_nr)
-    dispatch_event('leave', { actor_nr: actor_nr })
+    dispatch_event('leave', actor_nr: actor_nr)
   end
 
   def _on_event_set_properties(event, actor_nr)
-    dispatch_event('setProperties', { vals: event['vals'], actor_nr: actor_nr } )
+    dispatch_event('setProperties', {vals: event['vals'], actor_nr: actor_nr})
   end
 
   def _parse_response(type, response, actor_nr)
     case type
-    when OPERATION_CODES[:ping] then ping
-    when OPERATION_CODES[:join] then _on_response_join(actor_nr)
-    when OPERATION_CODES[:leave] then _on_response_leave(actor_nr)
-    when OPERATION_CODES[:raise_event] then return
-    when OPERATION_CODES[:get_properties] then _on_response_get_properties(response, actor_nr)
-    when OPERATION_CODES[:set_properties] then _on_response_set_properties(response, actor_nr)
-    else dispatch_custom_response(type, { vals: response['vals'], actor_nr: actor_nr })
+      when OPERATION_CODES[:ping] then
+        ping
+      when OPERATION_CODES[:join] then
+        _on_response_join(actor_nr)
+      when OPERATION_CODES[:leave] then
+        _on_response_leave(actor_nr)
+      when OPERATION_CODES[:raise_event] then
+        return
+      when OPERATION_CODES[:get_properties] then
+        _on_response_get_properties(response)
+      when OPERATION_CODES[:set_properties] then
+        _on_response_set_properties(response, actor_nr)
+      else
+        dispatch_custom_response(type, vals: response['vals'], actor_nr: actor_nr)
     end
   end
 
   def _on_response_get_properties(response)
-    if actor_properties = response['vals'][PARAMETER_CODES[:actor_properties]]
+    if (actor_properties = response['vals'][PARAMETER_CODES[:actor_properties]])
       actor_properties.each do |actor|
         actors[actor][:properties] = actor
       end
     end
 
-    if game_properties = response['vals'][PARAMETER_CODES[:game_properties]]
+    if (game_properties = response['vals'][PARAMETER_CODES[:game_properties]])
       game[:properties] = game_properties
     end
-    dispatch_response(OPERATION_CODES[:get_properties], { vals: response['vals'] })
+
+    dispatch_response(OPERATION_CODES[:get_properties], vals: response['vals'])
   end
 
   def _on_response_join(actor_nr)
     @joined = true
     my_actor = _add_actor(actor_nr) if my_actor.is_a? Hash
-    dispatch_response(OPERATION_CODES[:join], { actor_nr: actor_nr })
+    dispatch_response(OPERATION_CODES[:join], actor_nr: actor_nr)
   end
 
   def _on_response_leave(actor_nr)
     @joined = false
     _remove_actor(my_actor[:photon_id])
     @room_name = ''
-    @game = {properties:{}}
-    dispatch_response(OPERATION_CODES[:leave], { actor_nr: actor_nr })
+    @game      = {properties: {}}
+    dispatch_response(OPERATION_CODES[:leave], actor_nr: actor_nr)
   end
 
   def _on_response_set_properties(response, actor_nr)
-    dispatch_response(OPERATION_CODES[:set_properties], {vals:response['vals'], actor_nr: actor_nr})
+    dispatch_response(OPERATION_CODES[:set_properties], vals: response['vals'], actor_nr: actor_nr)
   end
-
-
 end

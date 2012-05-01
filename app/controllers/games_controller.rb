@@ -1,10 +1,10 @@
 class GamesController < ApplicationController
   respond_to :json, :only => [:template, :state]
 
-  before_filter :find_experiment,        :only   => [:new, :create]
-  before_filter :ability_to_create_game, :only   => [:new, :create]
-  before_filter :researcher_required,    :only   => [:mturk, :new, :create, :dashboard]
-  before_filter :find_game,              :except => [:new, :create, :delete_all, :frame]
+  before_filter :find_experiment, :only => [:new, :create]
+  before_filter :ability_to_create_game, :only => [:new, :create]
+  before_filter :researcher_required, :only => [:mturk, :new, :create, :dashboard]
+  before_filter :find_game, :except => [:new, :create, :delete_all, :frame]
 
   helper_method :unity_player_url
 
@@ -42,30 +42,30 @@ class GamesController < ApplicationController
       redirect_to new_user_session_path, :error => "You need to be logged in or coming from Amazon in order to play!"
     end
 
-    @hide_header = true
+    @hide_header         = true
     @no_default_side_bar = true
-    @hide_navigation = true
+    @hide_navigation     = true
 
     @hit = RTurk::Hit.find(params[:hitId]) if params[:hitId]
 
     @current_game = session[:current_game]
 
     @hiddens = {
-      :userid    => current_user.id,
-      :gameid    => @game.id,
-      :isamazon  => (@current_game and @current_game[:worker_id] ? 1 : 0),
-      :webplayer => unity_player_url
+        userid:    current_user.id,
+        gameid:    @game.id,
+        isamazon:  (@current_game and @current_game[:worker_id] ? 1 : 0),
+        webplayer: unity_player_url
     }
   end
 
   def new
     @hero_unit_title = "Create Game"
-    @games = Game.all
-    @game  = @experiment.games.build
+    @games           = Game.all
+    @game            = @experiment.games.build
   end
 
   def create
-    @game = @experiment.games.build(params[:game])
+    @game      = @experiment.games.build(params[:game])
     @game.user = current_user
 
     if @game.save
@@ -81,6 +81,7 @@ class GamesController < ApplicationController
     @game.hits.each do |h|
       RTurk::Hit.find(h.hitid).try(:expire!)
     end
+
     @game.destroy
 
     redirect games_path
@@ -98,30 +99,30 @@ class GamesController < ApplicationController
 
   def dashboard
     @hero_unit_title="Trial #{@game.id}"
-    @hiddens = {:gameid => @game.id}
+    @hiddens        = {:gameid => @game.id}
 
     @hiddens = {
-      :gameid => @game.id
+        :gameid => @game.id
     }
   end
 
   def summary
     @hero_unit_title = "Game #{params[:id]} Summary"
-    @gameusers = @game.gameusers(:mturk => false)
+    @gameusers       = @game.gameusers(:mturk => false)
   end
 
   def template
     data = {
-      :title => @game.title,
-      :description => @game.description,
-      :contprob    => helpers.number_to_currency(@game.contprob),
-      :init_endow  => @game.init_endow,
-      :cost_defect => @game.cost_defect,
-      :cost_coop   => @game.cost_coop,
-      :ind_pay_shares => helpers.number_to_currency(@game.ind_payoff_shares, :precision => 3),
-      :exchange_rate  => helpers.number_to_currency(@game.exchange_rate),
-      :totalplayers => @game.totalplayers,
-      :humanplayers => @game.humanplayers
+        title:          @game.title,
+        description:    @game.description,
+        contprob:       helpers.number_to_currency(@game.contprob),
+        init_endow:     @game.init_endow,
+        cost_defect:    @game.cost_defect,
+        cost_coop:      @game.cost_coop,
+        ind_pay_shares: helpers.number_to_currency(@game.ind_payoff_shares, :precision => 3),
+        exchange_rate:  helpers.number_to_currency(@game.exchange_rate),
+        totalplayers:   @game.totalplayers,
+        humanplayers:   @game.humanplayers
     }
 
     respond_with(data)

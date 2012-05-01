@@ -1,1 +1,1 @@
-rvm use "ruby-1.9.3-p0@web_dashboard"
+rvm use --create 1.9.3-p125@web_dashboard
