@@ -204,6 +204,7 @@ class Photon::Client
   end
 
   def _on_message_received(message)
+    puts "photon client _on_message_received #{message}"
     if message.is_a? Hash
       if !message['err'] or message['err'] == 0
         type            = ''
@@ -297,6 +298,7 @@ class Photon::Client
   end
 
   def _dispatch(name, args)
+    puts "dispatch #{name} : #{args.inspect}"
     if _events.include? name
       events = _events[name]
       type   = name.slice(0, 2)

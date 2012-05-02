@@ -1,8 +1,15 @@
 # encoding: utf-8
-$:.unshift(File.expand_path('./lib', ENV['rvm_path']))
+#$:.unshift(File.expand_path('./lib', ENV['rvm_path']))
 
 # if you are using Rails' asset pipeline
 load 'deploy/assets'
+
+# RVM details:
+#set :using_rvm, true
+set :rvm_ruby_string, "1.9.3"#@web_dashboard"
+set :rvm_bin_path, "/usr/local/rvm/bin"
+set :rvm_path, "/usr/local/rvm"
+#set :rvm_type, :user  # Don't use system-wide RVM
 
 require "rvm/capistrano"
 require "bundler/capistrano" # adds `bundle install` to the list
@@ -25,11 +32,6 @@ set :use_sudo, false
 set :sudo_prompt, "hcpLab180"
 #set :verbose, true
 
-# RVM details:
-#set :using_rvm, true
-set :rvm_ruby_string, "1.9.3"#@web_dashboard"
-set :rvm_bin_path, "/usr/local/rvm/bin"
-#set :rvm_type, :user  # Don't use system-wide RVM
 
 # SCM details:
 set :scm, :git
@@ -37,7 +39,7 @@ set :scm_verbose, true
 set :git_enable_submodules, false
 set :deploy_via, :remote_cache
 set :repository,  "git@github.com:liscovich/WebDashboard.git"
-set :branch, "rails"
+set :branch, "photon_client"
 set :keep_releases, 4
 
 set :stack, :passenger

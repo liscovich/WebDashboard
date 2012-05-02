@@ -219,6 +219,8 @@ GEM
       nokogiri (>= 1.4.1)
       rest-client (>= 1.4.0)
     ruby-hmac (0.4.0)
+    rvm-capistrano (1.1.0)
+      capistrano (>= 2.0.0)
     sass (3.1.16)
     sass-rails (3.2.5)
       railties (~> 3.2.0)
@@ -280,6 +282,7 @@ DEPENDENCIES
   rails (= 3.2.0)
   rspec-rails
   rturk
+  rvm-capistrano
   sass-rails (~> 3.2.3)
   slim
   therubyracer
