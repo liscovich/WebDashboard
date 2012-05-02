@@ -7,9 +7,7 @@ load 'deploy/assets'
 # RVM details:
 #set :using_rvm, true
 set :rvm_ruby_string, "1.9.3"#@web_dashboard"
-set :rvm_bin_path, "/usr/local/rvm/bin"
-set :rvm_path, "/usr/local/rvm"
-#set :rvm_type, :user  # Don't use system-wide RVM
+set :rvm_type, :root  # Don't use system-wide RVM
 
 require "rvm/capistrano"
 require "bundler/capistrano" # adds `bundle install` to the list
@@ -54,6 +52,10 @@ depend :remote, :gem, "bundler", ">=1.0.11"
 namespace :deploy do
   task :restart, :roles => :app do
     run "touch #{File.join(current_path, 'tmp', 'restart.txt')}"
+  end
+
+  task :start, :roles => :app do
+    run "echo 'started'"
   end
 end
 

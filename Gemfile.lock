@@ -262,6 +262,7 @@ DEPENDENCIES
   carrierwave
   coffee-rails (~> 3.2.1)
   compass (>= 0.11.7)
+  daemons
   default_value_for
   devise
   em-http-request
