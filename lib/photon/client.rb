@@ -122,14 +122,17 @@ class Photon::Client
       end
 
       _socket.on 'error' do
+        puts 'on error'
         _on_error
       end
 
       _socket.on 'message' do |data|
+        puts 'on message'
         _on_message_received(data)
       end
 
       _socket.on 'disconnect' do
+        puts 'on disconnect'
         _on_disconnect
       end
     else
@@ -205,6 +208,7 @@ class Photon::Client
 
   def _on_message_received(message)
     puts "photon client _on_message_received #{message}"
+
     if message.is_a? Hash
       if !message['err'] or message['err'] == 0
         type            = ''
@@ -309,14 +313,17 @@ class Photon::Client
   end
 
   def dispatch_event(name, args={})
+    puts "dispatch_event(#{name}, #{args.inspect})"
     _dispatch("evt_#{name}", args)
   end
 
   def dispatch_custom_event(name, args={})
+    puts "dispatch_custom_event(#{name}, #{args.inspect})"
     dispatch_event("cus_#{name}", args)
   end
 
   def dispatch_response(name, args={})
+    puts "dispatch_response(#{name}, #{args.inspect})"
     _dispatch("rsp_#{name}", args)
   end
 

@@ -54,9 +54,6 @@ namespace :deploy do
     run "touch #{File.join(current_path, 'tmp', 'restart.txt')}"
   end
 
-  task :start, :roles => :app do
-    run "echo 'started'"
-  end
 end
 
 task :symlink_assets do
@@ -78,3 +75,8 @@ end
 after 'deploy:update_code', :symlink_assets
 after "deploy:update_code", "deploy:migrate"
 after 'deploy:update', 'deploy:cleanup'
+
+after "deploy:update" do
+  run "#{default_shell} -c ruby #{File.join(current_path, 'lib', 'photon_client_service.rb')} stop"
+  run "#{default_shell} -c ruby #{File.join(current_path, 'lib', 'photon_client_service.rb')} start"
+end
