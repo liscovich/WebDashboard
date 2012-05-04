@@ -16,7 +16,7 @@ end
 
 EM.run do
   client = Photon::Client.new
-  room   = "ruby16"
+  room   = "1011"
 
   redis_server   = Faye::Redis.create(Faye::Engine::Proxy.new({}), host: FAYE_REDIS_SERVER, namespace: FAYE_REDIS_NAMESPACE)
   redis_database = WebSocket::Redis.create(host: FAYE_REDIS_SERVER, namespace: REDIS_NAMESPACE)
@@ -24,7 +24,7 @@ EM.run do
   client.connect(PHOTON_SERVER_HOST, port: PHOTON_SERVER_PORT)
 
   client.add_event_listener 'connect' do
-    client.join(room)
+    client.join(room, nil, [255, 'guest'], true)
   end
 
   client.add_custom_event_listener room do |data|

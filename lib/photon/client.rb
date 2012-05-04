@@ -1,6 +1,6 @@
 class Photon::Client
   OPERATION_CODES = {
-      join:           255,
+      join:           226,
       leave:          254,
       raise_event:    253,
       set_properties: 252,
@@ -185,6 +185,7 @@ class Photon::Client
   end
 
   def _send(data)
+    puts "_send: #{data.inspect}"
     if connected? and !closing?
       _socket.msend(data)
     else
@@ -364,15 +365,15 @@ class Photon::Client
   end
 
   def raise_event(event_code, data = nil)
-    if joined?
+    #if joined?
       if data
         _send_operation(OPERATION_CODES[:raise_event], [PARAMETER_CODES[:code], event_code, PARAMETER_CODES[:data], data])
       else
         raise "PhotonPeer[raise_event] - Event #{event_code} - data not passed"
       end
-    else
-      raise "PhotonPeer[raise_event] - Not joined!"
-    end
+    #else
+    #  raise "PhotonPeer[raise_event] - Not joined!"
+    #end
   end
 
   def set_actor_properties(data, broadcast, actor_number)
@@ -403,7 +404,7 @@ class Photon::Client
   end
 
   def set_game_properties(data, broadcast)
-    if joined?
+    if joined? || true
       actor_number ||= 0
       _send_operation(OPERATION_CODES[:setProperties], [PARAMETER_CODES[:broadcast], !!broadcast, PARAMETER_CODES[:properties], data])
     else
@@ -412,7 +413,7 @@ class Photon::Client
   end
 
   def get_game_properties(game_property_keys)
-    if joined?
+    if joined? || true
       data_for_send = []
       data_for_send << PARAMETER_CODES[:game_properties]
       data_for_send << game_property_keys if game_property_keys.is_a? Array and game_property_keys.length > 0
@@ -435,6 +436,7 @@ class Photon::Client
 
 
   def _parse_event(type, event, actor_nr)
+    puts "Parse Event: #{type}, #{event}"
     case type
       when EVENT_CODES[:join] then
         _on_event_join(event, actor_nr)
