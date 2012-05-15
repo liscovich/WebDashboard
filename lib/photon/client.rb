@@ -1,6 +1,8 @@
 class Photon::Client
   OPERATION_CODES = {
+      authenticate:           230,
       join:           226,
+      create:           227,
       leave:          254,
       raise_event:    253,
       set_properties: 252,
@@ -22,6 +24,8 @@ class Photon::Client
 
   PARAMETER_CODES = {
       game_id:          255,
+      app_version:      220,
+      app_id:           224,
       actor_nr:         254,
       target_actor_nr:  253,
       actors:           252,
@@ -182,6 +186,10 @@ class Photon::Client
         end
       end
     end
+  end
+
+  def authenticate app_version, app_id
+   _send_operation(OPERATION_CODES[:authenticate], [PARAMETER_CODES[:app_version], app_version, PARAMETER_CODES[:app_id], app_id])
   end
 
   def _send(data)

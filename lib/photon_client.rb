@@ -24,6 +24,7 @@ EM.run do
   client.connect(PHOTON_SERVER_HOST, port: PHOTON_SERVER_PORT)
 
   client.add_event_listener 'connect' do
+    client.authenticate("v1.01.9", "Master")
     client.join(room, nil, [255, 'guest'], true)
   end
 
