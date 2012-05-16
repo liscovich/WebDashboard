@@ -14,3 +14,9 @@
 /nbproject/
 db/database.yml
 /public/uploads/
+
+#Idea files
+/.idea/
+
+# Vim Files
+.*.sw?
