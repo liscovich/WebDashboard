@@ -1,8 +1,9 @@
 class Photon::Client
   OPERATION_CODES = {
-      authenticate:           230,
+      authenticate:   230,
       join:           226,
-      create:           227,
+      join_lobby:           226,
+      create:         227,
       leave:          254,
       raise_event:    253,
       set_properties: 252,
@@ -11,7 +12,7 @@ class Photon::Client
   }
 
   EVENT_CODES = {
-      join:               255,
+      join:               230,
       leave:              254,
       properties_changed: 253,
       connecting:         'connecting',
@@ -307,32 +308,31 @@ class Photon::Client
   end
 
   def add_custom_response_listener(name, &block)
-    _add_response_listener("cus_#{name}", &block)
+    _add_listener("rsp_cus_#{name}", &block)
   end
 
   def _dispatch(name, args)
     puts "dispatch #{name} : #{args.inspect}"
+    p _events
     if _events.include? name
       events = _events[name]
       type   = name.slice(0, 2)
       events.each do |event|
+        puts "inoking"
         event.call(args)
       end
     end
   end
 
   def dispatch_event(name, args={})
-    puts "dispatch_event(#{name}, #{args.inspect})"
     _dispatch("evt_#{name}", args)
   end
 
   def dispatch_custom_event(name, args={})
-    puts "dispatch_custom_event(#{name}, #{args.inspect})"
     dispatch_event("cus_#{name}", args)
   end
 
   def dispatch_response(name, args={})
-    puts "dispatch_response(#{name}, #{args.inspect})"
     _dispatch("rsp_#{name}", args)
   end
 
@@ -373,15 +373,15 @@ class Photon::Client
   end
 
   def raise_event(event_code, data = nil)
-    #if joined?
+    if joined? || true
       if data
         _send_operation(OPERATION_CODES[:raise_event], [PARAMETER_CODES[:code], event_code, PARAMETER_CODES[:data], data])
       else
         raise "PhotonPeer[raise_event] - Event #{event_code} - data not passed"
       end
-    #else
-    #  raise "PhotonPeer[raise_event] - Not joined!"
-    #end
+    else
+      raise "PhotonPeer[raise_event] - Not joined!"
+    end
   end
 
   def set_actor_properties(data, broadcast, actor_number)
@@ -412,7 +412,7 @@ class Photon::Client
   end
 
   def set_game_properties(data, broadcast)
-    if joined? || true
+    if joined?
       actor_number ||= 0
       _send_operation(OPERATION_CODES[:setProperties], [PARAMETER_CODES[:broadcast], !!broadcast, PARAMETER_CODES[:properties], data])
     else
@@ -421,7 +421,7 @@ class Photon::Client
   end
 
   def get_game_properties(game_property_keys)
-    if joined? || true
+    if joined?
       data_for_send = []
       data_for_send << PARAMETER_CODES[:game_properties]
       data_for_send << game_property_keys if game_property_keys.is_a? Array and game_property_keys.length > 0

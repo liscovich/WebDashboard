@@ -16,7 +16,7 @@ end
 
 EM.run do
   client = Photon::Client.new
-  room   = "1011"
+  room   = "ruby1011"
 
   redis_server   = Faye::Redis.create(Faye::Engine::Proxy.new({}), host: FAYE_REDIS_SERVER, namespace: FAYE_REDIS_NAMESPACE)
   redis_database = WebSocket::Redis.create(host: FAYE_REDIS_SERVER, namespace: REDIS_NAMESPACE)
@@ -25,7 +25,6 @@ EM.run do
 
   client.add_event_listener 'connect' do
     client.authenticate("v1.01.9", "Master")
-    client.join(room, nil, [255, 'guest'], true)
   end
 
   client.add_custom_event_listener room do |data|
@@ -39,8 +38,14 @@ EM.run do
     data['channel'] = '/messages'
   end
 
-  client.add_event_listener 'join' do |data|
-    client.raise_event(16, event_type: 'new_round', state_name: 'state_name', round_id: 1, user_id: 1, ai_id: 'true')
+  client.add_event_listener 230 do |data|
+    puts "joined"
+  end
+
+  client.add_custom_response_listener 230 do |data|
+    puts 'custom response'
+    client.join(room, nil, [255, 'Guest 1231231'], true)
+    #client.raise_event(200, event_type: 'new_round', state_name: 'state_name', round_id: 1, user_id: 1, ai_id: 'true')
   end
 
   EventMachine.add_periodic_timer(10) do
