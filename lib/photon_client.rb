@@ -38,13 +38,22 @@ EM.run do
     data['channel'] = '/messages'
   end
 
+  client.add_event_listener 'join' do |data|
+    client.raise_event(200, event_type: 'new_round', state_name: 'state_name', round_id: 1, user_id: 1, ai_id: 'true')
+  end
+
   client.add_event_listener 230 do |data|
+    puts "joined lobby"
+  end
+
+  client.add_custom_event_listener 230 do |data|
     puts "joined"
   end
 
   client.add_custom_response_listener 230 do |data|
-    puts 'custom response'
-    client.join(room, nil, [255, 'Guest 1231231'], true)
+    puts "custom response #{data}"
+    #client.join(room, nil, [255, 'Guest 1231231'], true)
+    client.join_lobby
     #client.raise_event(200, event_type: 'new_round', state_name: 'state_name', round_id: 1, user_id: 1, ai_id: 'true')
   end
 

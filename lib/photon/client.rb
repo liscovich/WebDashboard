@@ -2,7 +2,7 @@ class Photon::Client
   OPERATION_CODES = {
       authenticate:   230,
       join:           226,
-      join_lobby:           226,
+      join_lobby:     229,
       create:         227,
       leave:          254,
       raise_event:    253,
@@ -154,6 +154,9 @@ class Photon::Client
     end
   end
 
+  def join_lobby
+    _send_operation(OPERATION_CODES[:join_lobby])
+  end
 
   def join(game_id, game_properties = nil, actor_properties = nil, broadcast = nil)
     if game_id and connected? and !joined?
@@ -217,14 +220,17 @@ class Photon::Client
   end
 
   def _on_message_received(message)
-    puts "photon client _on_message_received #{message}"
+    puts "photon client _on_message_received #{message.inspect}"
 
     if message.is_a? Hash
       if !message['err'] or message['err'] == 0
         type            = ''
-        message['vals'] = message['vals'] || []
+        message['vals'] = message['vals'] || {}
         message['vals'] = _parse_message_values_array_to_json(message['vals']) if message['vals'].length > 0
-        message_actor_id = message['vals']['254'] ? message['vals']['254'] : my_actor[:photon_id] ? my_actor[:photon_id] : -1
+
+        actor_nr_from_response = message['vals']['254']
+        message_actor_id = actor_nr_from_response || my_actor[:photon_id] || -1
+
         if message['res']
           _parse_response(message['res'], message, message_actor_id)
         else
@@ -458,6 +464,7 @@ class Photon::Client
   end
 
   def _on_event_join(event, actor_nr)
+    puts "ON EVENT JOIN"
     if actor_nr != my_actor[:photon_id]
       _add_actor(actor_nr)
       dispatch_event('join', new_actors: [actor_nr])
