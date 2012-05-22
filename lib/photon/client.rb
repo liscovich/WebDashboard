@@ -12,7 +12,9 @@ class Photon::Client
   }
 
   EVENT_CODES = {
-      join:               230,
+      join:               255,
+      game_list:               230,
+      game_update_list:               229,
       leave:              254,
       properties_changed: 253,
       connecting:         'connecting',
@@ -38,7 +40,20 @@ class Photon::Client
       receiver_group:   246,
       data:             245,
       code:             244,
-      flush:            243
+      flush:            243,
+
+      game_list: 222
+
+  }
+
+  GAME_CODES = {
+    max_players: 255,
+    visible?: 254,
+    open?: 253,
+    player_count: 252,
+    removed: 251,
+    props_listed_in_lobby: 250,
+    cleanup_cache_on_leave: 249
   }
 
   def initialize(host = nil, options = {})

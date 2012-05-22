@@ -24,7 +24,7 @@ EM.run do
   client.connect(PHOTON_SERVER_HOST, port: PHOTON_SERVER_PORT)
 
   client.add_event_listener 'connect' do
-    client.authenticate("v1.01.9", "Master")
+    client.authenticate("v1.0", "Master")
   end
 
   client.add_custom_event_listener room do |data|
@@ -39,15 +39,15 @@ EM.run do
   end
 
   client.add_event_listener 'join' do |data|
-    client.raise_event(200, event_type: 'new_round', state_name: 'state_name', round_id: 1, user_id: 1, ai_id: 'true')
+    #client.raise_event(200, event_type: 'new_round', state_name: 'state_name', round_id: 1, user_id: 1, ai_id: 'true')
   end
 
   client.add_event_listener 230 do |data|
-    puts "joined lobby"
+    puts "230 "
   end
 
-  client.add_custom_event_listener 230 do |data|
-    puts "joined"
+  client.add_custom_event_listener 229 do |data|
+    puts "230"
   end
 
   client.add_custom_response_listener 230 do |data|
