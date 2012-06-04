@@ -13,8 +13,8 @@ class Photon::Client
 
   EVENT_CODES = {
       join:               255,
-      game_list:               230,
-      game_update_list:               229,
+      game_list:          230,
+      game_update_list:   229,
       leave:              254,
       properties_changed: 253,
       connecting:         'connecting',
@@ -142,17 +142,17 @@ class Photon::Client
       end
 
       _socket.on 'error' do
-        puts 'on error'
+        # puts 'on error'
         _on_error
       end
 
       _socket.on 'message' do |data|
-        puts 'on message'
+        # puts 'on message'
         _on_message_received(data)
       end
 
       _socket.on 'disconnect' do
-        puts 'on disconnect'
+        # puts 'on disconnect'
         _on_disconnect
       end
     else
@@ -171,6 +171,15 @@ class Photon::Client
 
   def join_lobby
     _send_operation(OPERATION_CODES[:join_lobby])
+  end
+
+  def create_room game_id
+    if game_id and connected? and !joined?
+      data_for_send = []
+      data_for_send << PARAMETER_CODES[:game_id]
+      data_for_send << game_id
+      _send_operation(OPERATION_CODES[:create], data_for_send)
+    end
   end
 
   def join(game_id, game_properties = nil, actor_properties = nil, broadcast = nil)
@@ -212,7 +221,7 @@ class Photon::Client
   end
 
   def _send(data)
-    puts "_send: #{data.inspect}"
+    # puts "_send: #{data.inspect}"
     if connected? and !closing?
       _socket.msend(data)
     else
@@ -235,7 +244,7 @@ class Photon::Client
   end
 
   def _on_message_received(message)
-    puts "photon client _on_message_received #{message.inspect}"
+    # puts "photon client _on_message_received #{message.inspect}"
 
     if message.is_a? Hash
       if !message['err'] or message['err'] == 0
@@ -333,13 +342,12 @@ class Photon::Client
   end
 
   def _dispatch(name, args)
-    puts "dispatch #{name} : #{args.inspect}"
-    p _events
+    # puts "dispatch #{name} : #{args.inspect}"
+    # p _events
     if _events.include? name
       events = _events[name]
       type   = name.slice(0, 2)
       events.each do |event|
-        puts "inoking"
         event.call(args)
       end
     end
@@ -465,7 +473,7 @@ class Photon::Client
 
 
   def _parse_event(type, event, actor_nr)
-    puts "Parse Event: #{type}, #{event}"
+    # puts "Parse Event: #{type}, #{event}"
     case type
       when EVENT_CODES[:join] then
         _on_event_join(event, actor_nr)
@@ -479,7 +487,7 @@ class Photon::Client
   end
 
   def _on_event_join(event, actor_nr)
-    puts "ON EVENT JOIN"
+    # puts "ON EVENT JOIN"
     if actor_nr != my_actor[:photon_id]
       _add_actor(actor_nr)
       dispatch_event('join', new_actors: [actor_nr])

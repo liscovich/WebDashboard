@@ -20,8 +20,8 @@ $ ->
       when 'new_round'
         $('#dashboard_tbody').append "<tr><td>Round #{o.round_id}</td></tr>"
 
-  client = new Faye.Client('http://klikker.net:9292/socket')
+  client = new Faye.Client('http://localhost:9292/socket')
 
-  client.subscribe '/messages', (message) ->
+  client.subscribe '/messages/1011', (message) ->
     process(message)
 

@@ -85,7 +85,7 @@ class Photon::WebSocket
   end
 
   def _on_data(data)
-    puts "on data"
+    # puts "on data"
     messages = _decode(data)
     messages.each { |message| _on_message(message) } if messages.length > 0
   end
