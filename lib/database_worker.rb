@@ -1,6 +1,5 @@
 require 'yajl'
 require 'active_record'
-require 'active_support'
 
 require File.expand_path('../../config/environment', __FILE__)
 
@@ -18,19 +17,8 @@ EM.run {
     message = Yajl::Parser.parse(message)
     event_data = message["245"]
 
-    data = {}
-    event_data.each_pair do |k, v|
-      data[k.underscore] = v
-    end
-    event_data.delete 'channel'
-    data.delete 'round'
+    event_data["game_id"]  = message["255"]
 
-    data["round_id"] = event_data["round"]
-    data["game_id"]  = message["255"]
-
-    puts "New data: #{data}"
-
-
-    # p Event.create!(data)
+    Event.create!(event_data)
   end
 }

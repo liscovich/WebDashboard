@@ -1,6 +1,7 @@
 require 'eventmachine'
 require 'faye'
 require 'faye/redis'
+require 'active_support'
 
 require File.expand_path('../settings.rb', __FILE__)
 
@@ -31,17 +32,23 @@ EM.run do
 
     data            = data[Photon::Client::PARAMETER_CODES[:data].to_s]
     game_id         = data[Photon::Client::PARAMETER_CODES[:game_id].to_s]
-    puts "GameID: #{game_id}"
 
     game_event_data = data[Photon::Client::PARAMETER_CODES[:data].to_s]
 
-    game_event_data['channel'] = "/#{game_id}"
+    new_game_event_data = {}
+    game_event_data.each_pair do |k, v|
+      new_game_event_data[ActiveSupport::Inflector.underscore(k)] = v
+    end
+    new_game_event_data.delete 'round'
 
-    puts "Game Event Data: #{game_event_data.inspect}"
-    puts "All Data: #{data.inspect}"
+    new_game_event_data["round_id"] = game_event_data["round"]
 
-    redis_server.publish(game_event_data, [])
-    redis_database.publish(data)
+    faye_data = {}
+    faye_data['data'] = new_game_event_data
+    faye_data['channel'] = "/#{game_id}"
+
+    redis_server.publish(faye_data, [])
+    redis_database.publish(new_game_event_data)
   end
 
   client.add_custom_response_listener 230 do |data|
