@@ -16,12 +16,12 @@ $ ->
         return if players[str_id]
         players[str_id] = true
 
-        $('#dashboard_tbody').append("<tr><td></td><td>#{player_id}</td><td>#{o.choice}</td><td>#{o.score}</td><td>#{o.total_score+o.score}</td></tr>")
+        $('#dashboard_tbody').append("<tr><td>#{o.round_id}</td><td>#{player_id}</td><td>#{o.choice}</td><td>#{o.score}</td><td>#{o.total_score+o.score}</td></tr>")
       when 'new_round'
         $('#dashboard_tbody').append "<tr><td>Round #{o.round_id}</td></tr>"
 
-  client = new Faye.Client('http://localhost:9292/socket')
+  client = new Faye.Client('http://'+location.hostname+':9292/socket')
 
-  client.subscribe '/messages/1011', (message) ->
+  client.subscribe '/1011', (message) ->
     process(message)
 
